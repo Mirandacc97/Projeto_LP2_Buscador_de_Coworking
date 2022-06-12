@@ -1,12 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Assim com ensinado em sala de aula essa classe inicia o cliente,
+ * aqui a diferença é que o cliente inicia numa interface java swing.
  */
 package pkg18.protocolclient;
-
-import java.io.*;
-import java.net.*;
 
 /**
  *
@@ -16,7 +12,6 @@ public class ProtocolClient {
 
     /**
      * @param args the command line arguments
-     * @throws java.io.IOException
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
@@ -44,8 +39,9 @@ public class ProtocolClient {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
-                new ProtocolClientFrame().setVisible(true);
+                new ProtocolClientFrame().setVisible(true);//inicia 
             }
         });
     }
