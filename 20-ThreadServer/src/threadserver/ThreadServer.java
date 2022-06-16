@@ -22,7 +22,7 @@ public class ThreadServer {
         // TODO code application logic here
         ServerSocket s;
         Socket ns;
-        s = new ServerSocket(4444);
+        s = new ServerSocket(1234);
         System.out.println("Servidor Online");
         System.out.println("Aguardando conexões");
         while (true) {

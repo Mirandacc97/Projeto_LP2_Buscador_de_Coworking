@@ -5,11 +5,23 @@
  */
 package pkg18.protocolclient;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import pkg18.protocolclient.Protocol.Status;
+
 /**
  *
  * @author Marcus
  */
 public class ProtocolClientFrame extends javax.swing.JFrame {
+
+    private Socket s;
+    private Protocol protocol;
+    private ConectaCliente conectaCliente;
 
     /**
      * Creates new form ProtocolClientFrame
@@ -28,7 +40,78 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         jPanelChatJanela.setVisible(false);
         jPanelConversacao.setVisible(false);
         JPanelProfissionaisOn.setVisible(false);
-                
+        listOnlines.setEnabled(false);
+        btnMarcarHorario.setEnabled(false);
+
+    }
+
+    private class ClienteSocket implements Runnable {
+
+        private ObjectInputStream in;
+
+        public ClienteSocket(Socket ns) {
+
+            try {
+                this.in = new ObjectInputStream(ns.getInputStream());
+            } catch (IOException ex) {
+                Logger.getLogger(ProtocolClientFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        @Override
+        public void run() {
+            Protocol protocol = null;
+            try {
+                while (true) {
+
+                    Status status = protocol.getStatus();
+
+                    if (status.equals(Status.CONECTADO)) { //se o usuario está no servidor...
+                        addOnline(protocol); //chama este método
+                    } else if (status.equals(Status.DESCONECTADO)) {
+                        desconectado(); //chama o método
+                        s.close();//fecha o socket
+                    } else if (status.equals(Status.MSG_PRIVADA)) {
+                        System.out.println("::: " + protocol.getTexto() + " :::");
+                        msgIndividual(protocol);
+                    } else if (status.equals(Status.PROFISSIONAIS_ON)) {
+                        listaOnline(protocol);
+                    }
+                }
+            } catch (IOException ex) {
+                Logger.getLogger(ProtocolClientFrame.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
+    private void desconectado() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void msgIndividual(Protocol protocol) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void listaOnline(Protocol protocol) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void addOnline(Protocol protocol) {
+        /*serve para adicionar a lista os nomes que estão online,
+          se o nome ja está na lista,  a pessoa deve escolher outro nome,
+          senão dá problema no metodo de chat individual*/
+        if(protocol.getTexto().equals("NO")){ //se o nome está na lista dos onlines, escreva NO na string do Protocol
+            //this.jTextName.setText("");//Limpa o campo de Texto (TESTAR)
+            JOptionPane.showMessageDialog(this, "Mesmo nome encontrado, escolha outro nome");// mostra poup-up
+        } else{
+            
+        } 
+        this.protocol = protocol;
+        //↓ Habilita recursos da tela ↓
+         listOnlines.setEnabled(true);
+        btnMarcarHorario.setEnabled(true);
+        
+
     }
 
     /**
@@ -44,10 +127,10 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         listOnlines = new javax.swing.JList();
         jPanelAreaConexão = new javax.swing.JPanel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        jTextName = new javax.swing.JTextField();
+        jButtonConectar = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        btnMarcarHorario = new javax.swing.JButton();
         jPanelTelaSelect = new javax.swing.JPanel();
         btnCliente = new javax.swing.JButton();
         btnProfissional = new javax.swing.JButton();
@@ -97,7 +180,12 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
 
         jPanelAreaConexão.setBorder(javax.swing.BorderFactory.createTitledBorder("Seu nome"));
 
-        jButton1.setText("Conectar");
+        jButtonConectar.setText("Conectar");
+        jButtonConectar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonConectarActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Sair");
 
@@ -107,9 +195,9 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             jPanelAreaConexãoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelAreaConexãoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextName, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
+                .addComponent(jButtonConectar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -119,13 +207,13 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             .addGroup(jPanelAreaConexãoLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanelAreaConexãoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextName, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonConectar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton2))
                 .addGap(11, 11, 11))
         );
 
-        jButton6.setText("Marcar Horário");
+        btnMarcarHorario.setText("Marcar Horário");
 
         javax.swing.GroupLayout JPanelProfissionaisOnLayout = new javax.swing.GroupLayout(JPanelProfissionaisOn);
         JPanelProfissionaisOn.setLayout(JPanelProfissionaisOnLayout);
@@ -135,7 +223,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton6)
+                .addComponent(btnMarcarHorario)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(JPanelProfissionaisOnLayout.createSequentialGroup()
                 .addComponent(jPanelAreaConexão, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -150,7 +238,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(JPanelProfissionaisOnLayout.createSequentialGroup()
                         .addGap(48, 48, 48)
-                        .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnMarcarHorario, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(0, 0, Short.MAX_VALUE))
         );
 
@@ -249,16 +337,13 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                         .addGap(14, 14, 14)
                         .addGroup(jPanelConversacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanelConversacaoLayout.createSequentialGroup()
-                                .addGroup(jPanelConversacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanelConversacaoLayout.createSequentialGroup()
-                                        .addComponent(jLabel6)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jLabel10))
-                                    .addGroup(jPanelConversacaoLayout.createSequentialGroup()
-                                        .addComponent(jLabel7)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel11)))
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel10))
+                            .addGroup(jPanelConversacaoLayout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel11))
                             .addGroup(jPanelConversacaoLayout.createSequentialGroup()
                                 .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
@@ -267,7 +352,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                                 .addComponent(jLabel5)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel9)))
-                        .addGap(88, 88, 88)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton5)
                         .addGap(16, 16, 16))
                     .addGroup(jPanelConversacaoLayout.createSequentialGroup()
@@ -590,13 +675,13 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         // Ao clicar no botão cliente
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-               //↓primeiro mostre e esconda esses paineis
-               JPanelProfissionaisOn.setVisible(true);
-               jPanelAreaConexão.setVisible(true);
-               jPanelTelaSelect.setVisible(false);
+                //↓primeiro mostre e esconda esses paineis
+                JPanelProfissionaisOn.setVisible(true);
+                jPanelAreaConexão.setVisible(true);
+                jPanelTelaSelect.setVisible(false);
             }
         });
-       
+
 
     }//GEN-LAST:event_btnClienteActionPerformed
 
@@ -604,11 +689,11 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-               jPanelSenhorio.setVisible(true);
-               jPanelCadastro1.setVisible(true);
-               jPanelCadastro2.setVisible(false);
-               jPanelTelaSelect.setVisible(false);
-                
+                jPanelSenhorio.setVisible(true);
+                jPanelCadastro1.setVisible(true);
+                jPanelCadastro2.setVisible(false);
+                jPanelTelaSelect.setVisible(false);
+
             }
         });
     }//GEN-LAST:event_btnLocatarioActionPerformed
@@ -617,8 +702,8 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-               jPanelProfissionalSelecionar.setVisible(true);
-               jPanelTelaSelect.setVisible(false);
+                jPanelProfissionalSelecionar.setVisible(true);
+                jPanelTelaSelect.setVisible(false);
             }
         });
     }//GEN-LAST:event_btnProfissionalActionPerformed
@@ -631,7 +716,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                
+
             }
         });
     }//GEN-LAST:event_btnAlugarActionPerformed
@@ -640,15 +725,19 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                
+
             }
         });
     }//GEN-LAST:event_btnChatClienteActionPerformed
 
+    private void jButtonConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConectarActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jButtonConectarActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel JPanelProfissionaisOn;
@@ -656,14 +745,14 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
     private javax.swing.JButton btnChatCliente;
     private javax.swing.JButton btnCliente;
     private javax.swing.JButton btnLocatario;
+    private javax.swing.JButton btnMarcarHorario;
     private javax.swing.JButton btnProfissional;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButtonConectar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -694,10 +783,10 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextName;
     private javax.swing.JList listOnlines;
     // End of variables declaration//GEN-END:variables
 }

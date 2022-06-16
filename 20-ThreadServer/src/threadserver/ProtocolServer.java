@@ -69,7 +69,7 @@ public class ProtocolServer implements Runnable {
                 } else if (status.equals(Status.MSG_ENV)) {
                     msgParaTodos(protocol);//chama este método
                 } else if (status.equals(Status.MSG_PRIVADA)) {
-                    msgParaProfissional(protocol);
+                    msgIndividual(protocol);
                 }
                 try {
                     if ((protocol = (Protocol) input.readObject()) != null) {
@@ -134,7 +134,7 @@ public class ProtocolServer implements Runnable {
 
     }
 
-    private void msgParaProfissional(Protocol protocol) { // usado par ao cliente mandar msg para ao profissional
+    private void msgIndividual(Protocol protocol) { // usado par ao cliente mandar msg para ao profissional
     //forEach com a mesma ideia do método anterior
     for (Map.Entry<String, ObjectOutputStream> pegaKey : on.entrySet()){
         if(pegaKey.getKey().equals(protocol.getNomeNalista())){ try {
