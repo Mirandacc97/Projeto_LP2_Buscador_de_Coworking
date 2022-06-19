@@ -32,7 +32,7 @@ public class ProtocolServer implements Runnable {
     /*Na lista Map listamos os usuarios online no servidor, mas os nomes deles não podem ser
     iguais. O usuário(key) é uma String e temos também seu ObjectOutputStream(value),
     utilizaremos essa técnica para percorrer a lista e verificar se o usuário consta na lista
-    dos que estão onlne*/
+    dos que estão online*/
     public ProtocolServer(Socket ns) { //construtor do servidor ouvinte
         s = ns;
 
@@ -137,7 +137,8 @@ public class ProtocolServer implements Runnable {
     private void msgIndividual(Protocol protocol) { // usado par ao cliente mandar msg para ao profissional
     //forEach com a mesma ideia do método anterior
     for (Map.Entry<String, ObjectOutputStream> pegaKey : on.entrySet()){
-        if(pegaKey.getKey().equals(protocol.getNomeNalista())){ try {
+        if(pegaKey.getKey().equals(protocol.getNomeNalista())){ 
+            try {
             //percorre a lista de nomes para escolher uma
             pegaKey.getValue().writeObject(protocol);
             } catch (IOException ex) {

@@ -100,17 +100,16 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         /*serve para adicionar a lista os nomes que estão online,
           se o nome ja está na lista,  a pessoa deve escolher outro nome,
           senão dá problema no metodo de chat individual*/
-        if(protocol.getTexto().equals("NO")){ //se o nome está na lista dos onlines, escreva NO na string do Protocol
+        if (protocol.getTexto().equals("NO")) { //se o nome está na lista dos onlines, escreva NO na string do Protocol
             //this.jTextName.setText("");//Limpa o campo de Texto (TESTAR)
             JOptionPane.showMessageDialog(this, "Mesmo nome encontrado, escolha outro nome");// mostra poup-up
-        } else{
-            
-        } 
+        } else {
+
+        }
         this.protocol = protocol;
         //↓ Habilita recursos da tela ↓
-         listOnlines.setEnabled(true);
+        listOnlines.setEnabled(true);
         btnMarcarHorario.setEnabled(true);
-        
 
     }
 
@@ -180,6 +179,12 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
 
         jPanelAreaConexão.setBorder(javax.swing.BorderFactory.createTitledBorder("Seu nome"));
 
+        jTextName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextNameActionPerformed(evt);
+            }
+        });
+
         jButtonConectar.setText("Conectar");
         jButtonConectar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -214,6 +219,11 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         );
 
         btnMarcarHorario.setText("Marcar Horário");
+        btnMarcarHorario.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMarcarHorarioActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout JPanelProfissionaisOnLayout = new javax.swing.GroupLayout(JPanelProfissionaisOn);
         JPanelProfissionaisOn.setLayout(JPanelProfissionaisOnLayout);
@@ -332,37 +342,35 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         jPanelConversacaoLayout.setHorizontalGroup(
             jPanelConversacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelConversacaoLayout.createSequentialGroup()
+                .addGap(14, 14, 14)
                 .addGroup(jPanelConversacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelConversacaoLayout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(jPanelConversacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelConversacaoLayout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel10))
-                            .addGroup(jPanelConversacaoLayout.createSequentialGroup()
-                                .addComponent(jLabel7)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel11))
-                            .addGroup(jPanelConversacaoLayout.createSequentialGroup()
-                                .addComponent(jLabel4)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel8))
-                            .addGroup(jPanelConversacaoLayout.createSequentialGroup()
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel9)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton5)
-                        .addGap(16, 16, 16))
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel10))
                     .addGroup(jPanelConversacaoLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanelConversacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelConversacaoLayout.createSequentialGroup()
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton3))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(jLabel7)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel11))
+                    .addGroup(jPanelConversacaoLayout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel8))
+                    .addGroup(jPanelConversacaoLayout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel9)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton5)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanelConversacaoLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelConversacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelConversacaoLayout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelConversacaoLayout.setVerticalGroup(
@@ -371,9 +379,9 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelConversacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 65, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanelConversacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanelConversacaoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -401,7 +409,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             .addGroup(jPanelChatJanelaLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanelConversacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelChatJanelaLayout.setVerticalGroup(
             jPanelChatJanelaLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -732,8 +740,34 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
 
     private void jButtonConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonConectarActionPerformed
         // TODO add your handling code here:
+        //concta o cliente
+        //addOnline o nome do cliente na lista
+        this.conectaCliente = new ConectaCliente();
+        this.protocol.setStatus(Status.CONECTADO);
+        this.s = this.conectaCliente.connect();
+        new Thread(new ClienteSocket(this.s)).start();
+        this.conectaCliente.enviar(protocol);
+
+        listOnlines.setEnabled(true);
+        btnMarcarHorario.setEnabled(true);
+
 
     }//GEN-LAST:event_jButtonConectarActionPerformed
+
+    private void btnMarcarHorarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMarcarHorarioActionPerformed
+        // TODO add your handling code here:
+
+        JPanelProfissionaisOn.setVisible(false);
+        jPanelTelaCliente.setVisible(true);
+        jPanelChatJanela.setVisible(true);
+        jPanelConversacao.setVisible(true);
+
+
+    }//GEN-LAST:event_btnMarcarHorarioActionPerformed
+
+    private void jTextNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextNameActionPerformed
 
     /**
      * @param args the command line arguments
