@@ -1,0 +1,9 @@
+Padronizar do ambiente de execução e desenvolvimento:
+	SO - Windows 10 ou 11
+	IDE - Eclipse
+	Versão do Java - 17 ou superior
+	Repositorio - GITHUB
+	Gerenciador de reposítorio - GITHUB ou GITKRAKEN
+
+// ------------------------------------ //
+
