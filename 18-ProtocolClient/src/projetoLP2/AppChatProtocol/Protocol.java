@@ -1,8 +1,5 @@
 /*
- * Nesta classe implemtentamos os nomes que iremos trablahar para
- * as classes que virão a seguir, e os valores que eles terão dentro
- * das classes seguintes. é simular ao Protocol ensinado em aula, mas
- * é adaptado a realidade nosso código que utiliza o JavaSwing
+ *
  */
 package projetoLP2.AppChatProtocol;
 
@@ -16,57 +13,39 @@ import java.util.Set;
  */
 public class Protocol implements Serializable{
     
-    private String funcao;
-    private String endereco;
-    private int horario;
-   
-    private String nome;
-    private String nomeNalista;
-    private String texto;
-    private String cadastro;
-    private String profissional;
-    private String senhorio;
-    
+    /*variáveis de instancia*/    
+    private String nome; //aramazena o nome do conectado
+    private String nomeNalista; //aramazena o nome do conectado que irá receber uma msg privada
+    private String texto; //aramazena o texto da mensagem
+    private String profissional; //armazena o nome do progissional
+     
     /*Usamos a lista Set por ter apenas valores únicos e por não precisarmos de
     um INDEX. Não precisamos de uma ordem exata das posições dos participantes
     que estão online no servidor*/
-    private Set<String> setOn = new HashSet<String>(); //interface Set e sua implementação HashSet
+    private Set<String> setOn = new HashSet<String>(); //setOn irá armazenar o nome de todos os conectados no servidor enquanto o memso estiver ativo
+    //interface Set e sua implementação HashSet
     /*O Hashset é mais rápido e essa é uma lista simples, não possui ordem e o
     tempo de execução é o mesmo. */
-    private Status status;
-    
-    public enum Status { 
-        CONECTADO, DESCONECTADO, MSG_ENV, MSG_PRIVADA, CLIENTES_ON, PROFISSIONAIS_ON
+   
+    private Status status;//Um enumerado(mas facil que variaveis estáticas)
+  
+    public enum Status { //pra cada msg enviada para o servidor ele vai dizer qual é a ação que ele quer executar
+        CONECTADO, CONECTADO_PRO, CONECTADO_LOC, DESCONECTADO, MSG_ENV, MSG_PRIVADA,
+        CLIENTES_ON, PROFISSIONAIS_ON, LOCAL, HORARIO_UM, HORARIO_DOIS, HORARIO_TRES,
+        HORARIO_QUATRO
         
         /*enun estende a clase java.lang.enum, como como não precisa de herança multipla
         escolhemos enum, ao invés de static, por ser mais prático, pois todos os valores
         aqui tem o mesmo sentido. Por serem objetos imutáveis, os declaramos com letras 
         maiusculas, como boa pratica de programação*/
     }
+
     //↓Métodos get e set
     public void setStatus(Status status) {
         this.status = status;
     }
     public Status getStatus() {
         return status;
-    }
-    
-    /*public Protocol(String funcao, String endereco, int horario){
-        this.funcao = funcao;
-        this.endereco = endereco;
-        this.horario = horario;
-    }*/
-    
-    public String getFuncao() {
-        return funcao;
-    }
-
-    public String getEndereco() {
-        return endereco;
-    }
-
-    public int getHorario() {
-        return horario;
     }
 
     public String getNome() {
@@ -81,32 +60,12 @@ public class Protocol implements Serializable{
         return texto;
     }
 
-    public String getCadastro() {
-        return cadastro;
-    }
-
     public String getProfissional() {
         return profissional;
     }
 
-    public String getSenhorio() {
-        return senhorio;
-    }
-
     public Set<String> getSetOn() {
         return setOn;
-    }
-
-    public void setFuncao(String funcao) {
-        this.funcao = funcao;
-    }
-
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
-    }
-
-    public void setHorario(int horario) {
-        this.horario = horario;
     }
 
     public void setNome(String nome) {
@@ -121,21 +80,11 @@ public class Protocol implements Serializable{
         this.texto = texto;
     }
 
-    public void setCadastro(String cadastro) {
-        this.cadastro = cadastro;
-    }
-
     public void setProfissional(String profissional) {
         this.profissional = profissional;
     }
 
-    public void setSenhorio(String senhorio) {
-        this.senhorio = senhorio;
-    }
-
     public void setSetOn(Set<String> setOn) {
         this.setOn = setOn;
-    }
-    
-  
+    }  
 }

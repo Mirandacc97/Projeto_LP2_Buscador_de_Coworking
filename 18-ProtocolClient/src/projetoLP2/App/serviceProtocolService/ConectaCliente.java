@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Assim como ensinado em sala de aula, essa classe tem o socket com oo ipe e aporta de conexão
  */
 package projetoLP2.App.serviceProtocolService;
 
@@ -36,7 +34,7 @@ public class ConectaCliente {
     }
         public void enviar(Protocol protocol) {
         try {
-            out.writeObject(protocol);
+            out.writeObject(protocol); //através ObjectOutputstream ele escreve no objeto com o writeObject
         } catch (IOException ex) {
             Logger.getLogger(ProtocolClient.class.getName()).log(Level.SEVERE, null, ex);
         }
