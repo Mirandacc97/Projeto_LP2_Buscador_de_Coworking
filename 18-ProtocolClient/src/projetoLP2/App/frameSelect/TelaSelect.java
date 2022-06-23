@@ -89,7 +89,8 @@ public class TelaSelect extends javax.swing.JFrame {
     private void btnClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClienteActionPerformed
         // TODO add your handling code here:
         new ProtocolClientFrame().setVisible(true);
-        TelaSelect.this.dispose(); //Fecha o jframe de seleção        
+        TelaSelect.this.dispose(); //Fecha o jframe de seleção
+
     }//GEN-LAST:event_btnClienteActionPerformed
 
     private void btnProActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProActionPerformed

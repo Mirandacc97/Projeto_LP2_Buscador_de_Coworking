@@ -35,9 +35,7 @@ public class ConectaCliente {
         public void enviar(Protocol protocol) {
         try {
             out.writeObject(protocol); //através ObjectOutputstream ele escreve no objeto com o writeObject
-        } catch (IOException ex) {
-            Logger.getLogger(ProtocolClient.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        } catch (Exception e) {}
     }
 
     

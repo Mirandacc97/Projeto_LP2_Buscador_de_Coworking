@@ -54,9 +54,9 @@ public class ProtocolProChatFrame extends javax.swing.JFrame {
                 while ((protocol = (Protocol) input.readObject()) != null) {
                     Status action = protocol.getStatus();
 
-                    if (action.equals(Status.CONECTADO)) {
+                    if (action.equals(Status.CONECTADO_PRO)) {
                         connected(protocol);
-                    } else if (action.equals(Status.DESCONECTADO)) {
+                    } else if (action.equals(Status.DESCONECTADOP)) {
                         disconnected();
                         s.close();
                     } else if (action.equals(Status.MSG_PRIVADA)) {
@@ -388,7 +388,7 @@ public class ProtocolProChatFrame extends javax.swing.JFrame {
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
         Protocol protocol = new Protocol();
         protocol.setNome(this.protocol.getNome());
-        protocol.setStatus(Status.DESCONECTADO);
+        protocol.setStatus(Status.DESCONECTADOP);
         this.conectaCliente.enviar(protocol);
         disconnected();
     }//GEN-LAST:event_btnSairActionPerformed

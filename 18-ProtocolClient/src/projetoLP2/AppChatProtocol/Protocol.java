@@ -30,9 +30,9 @@ public class Protocol implements Serializable{
     private Status status;//Um enumerado(mas facil que variaveis estáticas)
   
     public enum Status { //pra cada msg enviada para o servidor ele vai dizer qual é a ação que ele quer executar
-        CONECTADO, CONECTADO_PRO, CONECTADO_LOC, DESCONECTADO, MSG_ENV, MSG_PRIVADA,
-        CLIENTES_ON, PROFISSIONAIS_ON, LOCAL, HORARIO_UM, HORARIO_DOIS, HORARIO_TRES,
-        HORARIO_QUATRO
+        CONECTADO, CONECTADO_PRO, CONECTADO_LOC, DESCONECTADOC, DESCONECTADOP, DESCONECTADOL,
+        MSG_ENV, MSG_PRIVADA,CLIENTES_ON, PROFISSIONAIS_ON, LOCATARIOS_ON,LOCAL,
+        HORARIO_UM, HORARIO_DOIS, HORARIO_TRES, HORARIO_QUATRO
         
         /*enun estende a clase java.lang.enum, como como não precisa de herança multipla
         escolhemos enum, ao invés de static, por ser mais prático, pois todos os valores

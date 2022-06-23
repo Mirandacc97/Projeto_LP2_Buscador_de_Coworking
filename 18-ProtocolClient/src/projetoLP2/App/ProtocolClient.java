@@ -45,7 +45,6 @@ public class ProtocolClient {
             @Override
             public void run() {
                 new TelaSelect().setVisible(true);
-                //new ProtocolClientFrame().setVisible(true);//inicia 
             }
         });
     }

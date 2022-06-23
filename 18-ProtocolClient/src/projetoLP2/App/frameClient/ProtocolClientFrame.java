@@ -4,6 +4,7 @@
  */
 package projetoLP2.App.frameClient;
 
+import java.awt.event.KeyEvent;
 import projetoLP2.App.serviceProtocolService.ConectaCliente;
 import projetoLP2.AppChatProtocol.Protocol;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.net.Socket;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.control.Button;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -30,39 +32,46 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
     /**
      * Creates new form ClienteFrame
      */
-    public ProtocolClientFrame() {
+    public ProtocolClientFrame() { //construtor
         initComponents();
     }
 
-    private class ListenerSocket implements Runnable {
+    private class ListenerSocket implements Runnable { //inicia a Thread
 
-        private ObjectInputStream input;
+        private ObjectInputStream input; //como é o cliente, não precisa do output
 
         public ListenerSocket(Socket s) {
             try {
                 this.input = new ObjectInputStream(s.getInputStream());
-            } catch (IOException ex) {
-                Logger.getLogger(ProtocolClientFrame.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            } catch (Exception e) {}
         }
 
         @Override
         public void run() {
-            Protocol protocol = null;
+            Protocol protocol = null; //igual ao do servidor
             try {
-                while ((protocol = (Protocol) input.readObject()) != null) {
-                    Status action = protocol.getStatus();
-
-                    if (action.equals(Status.CONECTADO)) {
-                        connected(protocol);
-                    } else if (action.equals(Status.DESCONECTADO)) {
-                        disconnected();
-                        s.close();
-                    } else if (action.equals(Status.MSG_PRIVADA)) {
-                        System.out.println("::: " + protocol.getTexto() + " :::");
-                        receive(protocol);
-                    } else if (action.equals(Status.PROFISSIONAIS_ON)) {
-                        refreshOnlines(protocol);
+                while ((protocol = (Protocol) input.readObject()) != null) {//mesmos procedimentos do servidor
+                    Status status = protocol.getStatus(); //Irá reescrever a ação que o servidor está enviando
+                    switch (status) {
+                        case CONECTADO:
+                            conectar(protocol);
+                            break;
+                        case DESCONECTADOC:
+                            desconectar(); //Chama o método desconectar
+                            s.close(); // fecha o socket 
+                            //(BUG encontrado quando era colocado no método,
+                            //pois o while continuava rodando ma so socket, tentanso ler o input, só que 
+                            //estava fechado, e gerava um erro por isso precisou ser colocado aqui)
+                            break;
+                        case MSG_PRIVADA:
+                            System.out.println("Você diz: " + protocol.getTexto());
+                            msg_recebida(protocol);
+                            break;
+                        case PROFISSIONAIS_ON:
+                            pro_online(protocol);
+                            break;
+                        default:
+                            break;
                     }
                 }
             } catch (IOException ex) {
@@ -73,59 +82,64 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         }
     }
 
-    private void connected(Protocol protocol) {
-        if (protocol.getTexto().equals("NO")) {
-            this.txtName.setText("");
-            JOptionPane.showMessageDialog(this, "Conexão não realizada!\nTente novamente com um novo nome.");
+    private void conectar(Protocol protocol) {//método para preencher o protocol na lista enumerada do CONECTAR
+        if (protocol.getTexto().equals("Offline")) { //Não houve conexão, usado quando é negado a conexão, Ex. quando já tem o memso nome na lista dos onlines.
+            this.txtName.setText(""); //apaga o nome no cliente
+            JOptionPane.showMessageDialog(this, "A conexão Falhou!");//POP UP!
             return;
         }
+        //O else aqui é implícito, caso não seja "offline", então ele irá conectar,então faça o que está abaixo
+        this.protocol = protocol; //Pega o objeto protocol e passa o valor que recebemos como msg
+        this.btnConnectar.setEnabled(false); //desabilita este botão
+        this.txtName.setEditable(false); //não deixa mais mudar o nome na JTextField
 
-        this.protocol = protocol;
-        this.btnConnectar.setEnabled(false);
-        this.txtName.setEditable(false);
-
-        this.btnSair.setEnabled(true);
+        this.btnSair.setEnabled(true); //habilita este botão
         this.txtAreaSend.setEnabled(true);
-        this.txtAreaReceive.setEnabled(true);
-        this.btnEnviar.setEnabled(true);
-        this.btnLimpar.setEnabled(true);
+        this.txtAreaReceive.setEnabled(true); //habilita a área de texto que recebe
+        this.btnEnviar.setEnabled(true); //habilita o botão enviar
+        this.btnLimpar.setEnabled(true); //habilita o botão limpar
 
-        JOptionPane.showMessageDialog(this, "Você está conectado no chat!");
+        JOptionPane.showMessageDialog(this, "Conexão estabelecida."); //POP UP
     }
 
-    private void disconnected() {
-
-        this.btnConnectar.setEnabled(true);
+    private void desconectar() { //apenas habilita ou desabilita itens na tela
+        //☼ ↓AREAS DE TEXTO
         this.txtName.setEditable(true);
-
-        this.btnSair.setEnabled(false);
         this.txtAreaSend.setEnabled(false);
         this.txtAreaReceive.setEnabled(false);
+        //◙ BOTÕES
+        this.btnConnectar.setEnabled(true);
+        this.btnSair.setEnabled(false);
         this.btnEnviar.setEnabled(false);
         this.btnLimpar.setEnabled(false);
-        
+        //♫ LIMPA AS CAIXAS DE TEXTO
         this.txtAreaReceive.setText("");
         this.txtAreaSend.setText("");
+        
+        System.out.println(":::Desconectado:::");
 
-        JOptionPane.showMessageDialog(this, "Você saiu do chat!");
+        JOptionPane.showMessageDialog(this, "CONEXÃO PERDIDA!"); //POP UP!
     }
 
-    private void receive(Protocol protocol) {
-        this.txtAreaReceive.append(protocol.getNome() + " diz: " + protocol.getTexto() + "\n");
+    private void msg_recebida(Protocol protocol) {
+        this.txtAreaReceive.append(protocol.getNome() + " disse: " + protocol.getTexto() + "\n");
+        //o apend permite acumular várias msg que chegam e não precisa substituir uma msg por outra
     }
 
-    private void refreshOnlines(Protocol protocol) {
-        System.out.println(protocol.getSetOn().toString());
+    private void pro_online(Protocol protocol) {
+        System.out.println(protocol.getSetOn().toString());//teste no console 
         
-        Set<String> names = protocol.getSetOn();
+        Set<String> proNames = protocol.getSetOn(); //uma set de string para recuperar quem ta on
         
-        names.remove(protocol.getNome());
+        // proNames.remove(protocol.getNome()); //serve para remover o proprio nome da lista. como o cluente n ve outro cliente, então tando faz
         
-        String[] array = (String[]) names.toArray(new String[names.size()]);
+        String[] array = (String[]) proNames.toArray(new String[proNames.size()]);//o jlist so aceita um array
+        //faz o array ter exatamente o mesmo tamanho do das strings
         
-        this.listOnlines.setListData(array);
-        this.listOnlines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        this.listOnlines.setLayoutOrientation(JList.VERTICAL);
+        //↓ propriedades usadas no jList para seu funcionamento
+        this.listOnlines.setListData(array); //passar o array para o jList
+        this.listOnlines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //serve para aceitar ser um nome selecionado, sem isso era possivel selecionar vários
+        this.listOnlines.setLayoutOrientation(JList.VERTICAL); //organiza os nomes verticalmente
     }
 
     /**
@@ -201,7 +215,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                 .addComponent(btnSair))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Onlines"));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Profissionais Online"));
 
         jScrollPane3.setViewportView(listOnlines);
 
@@ -317,7 +331,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                             .addComponent(jLabel2)
                             .addComponent(txtProfProf))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jRadioButton1)
                             .addComponent(jRadioButton3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -367,58 +381,66 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConnectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectarActionPerformed
-        String name = this.txtName.getText();
+        String name = this.txtName.getText(); //pega o nome que esta na caixa de diálogo
 
-        if (!name.isEmpty()) {
-            this.protocol = new Protocol();
-            this.protocol.setStatus(Status.CONECTADO);
-            this.protocol.setNome(name);
+        if (!name.isEmpty()) { //Teste para não conectar sem nome, se tem nome digitado...
+            this.protocol = new Protocol(); //INICIA(instancia) o objeto
+            this.protocol.setStatus(Status.CONECTADO); //Seta o Status DO CLIENTE em Protocol
+            this.protocol.setNome(name);// seta o nome do cliente
 
-            this.conectaCliente = new ConectaCliente();
-            this.s = this.conectaCliente.connect();
+            this.conectaCliente = new ConectaCliente(); //inicia uma nova Thread socket que está enste objeto
+            this.s = this.conectaCliente.connect(); //inicia o método conecta que retorna o socket
 
-            new Thread(new ListenerSocket(this.s)).start();
+            new Thread(new ListenerSocket(this.s)).start(); //com os dados preenchidos, inicia a Thread
 
-            this.conectaCliente.enviar(protocol);
+            this.conectaCliente.enviar(protocol); //chama o método enviar no conecta Cliente
         }
     }//GEN-LAST:event_btnConnectarActionPerformed
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
-        Protocol protocol = new Protocol();
-        protocol.setNome(this.protocol.getNome());
-        protocol.setStatus(Status.DESCONECTADO);
-        this.conectaCliente.enviar(protocol);
-        disconnected();
+        //o botão sair desconecta sem que o programa feche, permitindo reconectar
+        Protocol protocol = new Protocol();//instancia essa ação
+        protocol.setNome(this.protocol.getNome()); //coloca o nome desse usuario no protocol
+        protocol.setStatus(Status.DESCONECTADOC);//Setamos seu status
+        this.conectaCliente.enviar(protocol);//envia esse status para o servidor
+        desconectar();
     }//GEN-LAST:event_btnSairActionPerformed
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
-        this.txtAreaSend.setText("");
+        this.txtAreaSend.setText(""); //teste de limpeza de área de texto: OK
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
-        String text = this.txtAreaSend.getText();
-        String name = this.protocol.getNome();
         
-        this.protocol = new Protocol();
+        String text = this.txtAreaSend.getText(); //Cria variavesrecuperadas desta area
+        String name = this.protocol.getNome(); //captura o nome
         
-        if (this.listOnlines.getSelectedIndex() > -1) {
-            this.protocol.setNomeNalista((String) this.listOnlines.getSelectedValue());
-            this.protocol.setStatus(Status.MSG_PRIVADA);
-            this.listOnlines.clearSelection();
+        this.protocol = new Protocol(); // cria a instancia
+        
+        if (this.listOnlines.getSelectedIndex() > -1) { //Teste para testar um nome selecionado
+            //no jList há um método getSelectedIndex que fica com -1 se n estiver ninguém selecionado
+            //por isso esse if diz: Se for maior que -1, então está selecionado
+            this.protocol.setNomeNalista((String) this.listOnlines.getSelectedValue()); //cast pra string para poder setar
+            this.txtAreaSend.setEnabled(true); 
+            this.btnEnviar.setEnabled(true);
+            this.btnLimpar.setEnabled(true);
+            this.protocol.setStatus(Status.MSG_PRIVADA); //envia a msg para o selecionado
+            this.listOnlines.clearSelection(); // limpa a seleção para não ficar eternamente selecionado
         } else {
-            this.protocol.setStatus(Status.MSG_ENV);
+           this.protocol.setStatus(Status.MSG_ENV);// Sua ação é feita para enviar msg a todos
+          //JOptionPane.showMessageDialog(this, "SELECIONE UM PROFISSIONAL!"); //Isso não irá acontecer, pois o campo de escrever so fica ativo quando seleciona um profissional
         }
         
-        if (!text.isEmpty()) {
-            this.protocol.setNome(name);
-            this.protocol.setTexto(text);
+        if (!text.isEmpty()) {//assim, quando algo na String
+            this.protocol.setNome(name); //seta o nome no protocol
+            this.protocol.setTexto(text); //e seta o texto figitado na string
 
-            this.txtAreaReceive.append("Você disse: " + text + "\n");
+            //this.txtAreaReceive.append("Você disse: " + text + "\n"); //escreve na area de texto recebida com um append(append permute escrever de forma acumulada)
             
-            this.conectaCliente.enviar(this.protocol);
+            this.conectaCliente.enviar(this.protocol); //chama o método enviar
         }
         
-        this.txtAreaSend.setText("");
+        this.txtAreaSend.setText(""); //limpa automaticamente a area apos enviar a msg
     }//GEN-LAST:event_btnEnviarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

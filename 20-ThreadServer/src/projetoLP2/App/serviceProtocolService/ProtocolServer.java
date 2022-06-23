@@ -18,7 +18,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  *
  * @author Marcus
@@ -28,8 +27,10 @@ public class ProtocolServer {
     private ServerSocket s;
     private Socket ns;
     //↓Uma Map que contém como CHAVE uma String e como VALOR um ObjectOutputStream
-    private Map<String, ObjectOutputStream> on = new HashMap<String, ObjectOutputStream>();//lista online Cliente
+    private Map<String, ObjectOutputStream> on = new HashMap<String, ObjectOutputStream>();   //lista online Cliente
     private Map<String, ObjectOutputStream> proOn = new HashMap<String, ObjectOutputStream>();//lista online Profissionais
+    private Map<String, ObjectOutputStream> locOn = new HashMap<String, ObjectOutputStream>();//Lista online de Locatarios
+
     /*Na lista Map listamos os usuarios online no servidor, mas os nomes deles não podem ser
     iguais. O usuário(key) é uma String e temos também seu ObjectOutputStream(value),
     utilizaremos essa técnica para percorrer a lista e verificar se o usuário consta na lista
@@ -39,23 +40,24 @@ public class ProtocolServer {
     para enviar a mensagem para todos os usuários como tbm para enviar para a 
     aplicação cliente, todos os usuarios que estão conectados no chat*/
 
-    public ProtocolServer(){ //método construtor
+    public ProtocolServer() { //método construtor
         try {
-            s  = new ServerSocket(1234); //inicia o objeto com sua porta
-            
-            System.out.println ("Servidor Online"); //printa no servidor
-            System.out.println ("Aguardando conexões");
+            s = new ServerSocket(1234); //inicia o objeto com sua porta
+
+            System.out.println("Servidor Online"); //printa no servidor
+            System.out.println("Aguardando conexões");
             while (true) { //executa enquanto o server está online
                 ns = s.accept(); //inicia o socket
                 new Thread(new Server(ns)).start(); //inicia a Thread na Runnable e passa como parametro o socket.
                 //sempre que um novo usuario se conecta, se cria uma nova e dois objetos output são criados pra esse cliente
-            }   } catch (IOException ex) {
+            }
+        } catch (IOException ex) {
             Logger.getLogger(ProtocolServer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public class Server implements Runnable {
-        
+
         private ObjectInputStream in; //variavel que executa a entrada de msg do servidor
         private ObjectOutputStream out;//variavel que recebe as msg enciadas pelos clientes
 
@@ -79,77 +81,106 @@ public class ProtocolServer {
                     Status status = protocol.getStatus();
                     /* ↑ Variavel dentro de Status que recebe o status que esta
             sendo enviado para a classe Protocol*/
-                    boolean conectou;
-                    
+                    boolean conectouC, conectouP, conectouL;
+
                     //↓↓↓↓↓ A partir de agora, testamos qual msg está vindo do usuário
-                    if (status.equals(Status.CONECTADO)) { //Pedido de Conexãp
-                        conectou = conectou(protocol, out); //chama o método que atribui uma string para os conectados
-                        if (conectou) { //no caso dele conectar...
-                            on.put(protocol.getNome(), out); //coloca o nome na lista dos conectados
-                            System.out.println("CLIENTE: " + protocol.getNome() + " CONECTADO");
-                            addOnline(); //chama este método
-                        }
-                    }else if (status.equals(Status.CONECTADO_PRO)) { //Pedido de Conexãp
-                        conectou = conectou(protocol, out); //chama o método que atribui uma string para os conectados
-                        if (conectou) { //no caso dele conectar...
-                            on.put(protocol.getNome(), out); //coloca o nome na lista dos conectados
-                            System.out.println("PROFISSIONAL: " + protocol.getNome() + " CONECTADO");
-                            //addOnlinePro(); //chama este método
-                        }
-                    }else if (status.equals(Status.CONECTADO_LOC)) { //Pedido de Conexãp
-                        conectou = conectou(protocol, out); //chama o método que atribui uma string para os conectados
-                        if (conectou) { //no caso dele conectar...
-                            on.put(protocol.getNome(), out); //coloca o nome na lista dos conectados
-                            System.out.println("lOCATARIO: " + protocol.getNome() + " CONECTADO");
-                            //addOnlineLoc(); //chama este método
-                        }
-                    } else if (status.equals(Status.DESCONECTADO)) {// usuario quer deixar o chat
-                        desconectado(protocol, out); //chama o método
-                        System.out.println(protocol.getNome() + " DESCONECTADO");
-                        addOnline(); //atualiza a lista que não terá o nome do desconectado nela
-                        return;
-                    } else if (status.equals(Status.MSG_ENV)) { //manda msg a todos no chat
-                        msgParaTodos(protocol);//chama este método
-                    } else if (status.equals(Status.MSG_PRIVADA)) { //pede msg privada
-                        msgIndividual(protocol);
-                    }else if(status.equals(Status.CLIENTES_ON)){
-                        
-                    }else if(status.equals(Status.PROFISSIONAIS_ON)){
-                        
-                    }else if(status.equals(Status.LOCAL)){
-                        
-                    }else if(status.equals(Status.HORARIO_UM)){
-                        
-                    }else if(status.equals(Status.HORARIO_DOIS)){
-                        
-                    }else if(status.equals(Status.HORARIO_TRES)){
-                        
-                    }else if(status.equals(Status.HORARIO_QUATRO)){
-                        
+                    switch (status) {
+                        case CONECTADO:
+                            //Pedido de Conexão do cliente
+                            conectouC = conectouC(protocol, out); //chama o método que atribui uma string para os conectados
+                            if (conectouC) { //no caso dele conectar...
+                                on.put(protocol.getNome(), out); //coloca o nome na lista dos  CLIENTES conectados
+                                System.out.println("CLIENTE: " + protocol.getNome() + " CONECTADO");
+                                addOnlineC(); //chama este método, sempre que um cliente conecta a lista é atualizada
+                            }
+                            break;
+                        case CONECTADO_PRO:
+                            //Pedido de Conexão do profissional
+                            conectouP = conectouP(protocol, out); //chama o método que atribui uma string para os conectados
+                            if (conectouP) { //no caso dele conectar...
+                                proOn.put(protocol.getNome(), out); //coloca o nome na lista dos PROFISSIONAIS conectados
+                                System.out.println("PROFISSIONAL: " + protocol.getNome() + " CONECTADO");
+                                addOnlineP(); //chama este método, sempre que um profissional conecta a lista é atualizada
+                            }
+                            break;
+                        case CONECTADO_LOC:
+                            //Pedido de Conexão do locatário
+                            conectouL = conectouL(protocol, out); //chama o método que atribui uma string para os conectados
+                            if (conectouL) { //no caso dele conectar...
+                                locOn.put(protocol.getNome(), out); //coloca o nome na lista dos LOCATARIOS conectados
+                                System.out.println("lOCATARIO: " + protocol.getNome() + " CONECTADO");
+                                addOnlineLoc(); //chama este método
+                            }
+                            break;
+                        case DESCONECTADOC:
+                            // usuario quer deixar o chat
+                            desconectadoC(protocol, out); //chama o método
+                            addOnlineC(); //atualiza a lista que não terá o nome do desconectado nela
+                            return;//Força o fechamento do while:::: https://www.delftstack.com/pt/howto/java/exit-while-loop-in-java/ :::
+                        case DESCONECTADOP:
+                            // usuario quer deixar o chat
+                            desconectadoP(protocol, out); //chama o método
+                            addOnlineP(); //atualiza a lista que não terá o nome do desconectado nela
+                            return;
+                        case DESCONECTADOL:
+                            // usuario quer deixar o chat
+                            desconectadoL(protocol, out); //chama o método
+                            addOnlineLoc(); //atualiza a lista que não terá o nome do desconectado nela
+                            return;
+                        case MSG_ENV:
+                            //manda msg a todos no chat
+                            msgParaTodos(protocol);//chama este método
+                            break;
+                        case MSG_PRIVADA:
+                            //pede msg privada
+                            msgIndividual(protocol);
+                            break;
+                        case CLIENTES_ON:
+                            break;
+                        case PROFISSIONAIS_ON:
+                            break;
+                        case LOCAL:
+                            break;
+                        case HORARIO_UM:
+                            break;
+                        case HORARIO_DOIS:
+                            break;
+                        case HORARIO_TRES:
+                            break;
+                        case HORARIO_QUATRO:
+                            break;
+                        default:
+                            break;
                     }
                 }
             } catch (IOException ex) {
-                Protocol aviso = new Protocol();
-                aviso.setNome(protocol.getNome());
-                desconectado(aviso, out);
-                addOnline(); // serve para enviar os que estão online apos um desconectar
+                // Protocol aviso = new Protocol();
+                // aviso.setNome(protocol.getNome());
+                // desconectadoC(aviso, out);
+                // addOnlineC(); // serve para enviar os que estão online apos um desconectar
+                // addOnlineP();
                 System.out.println(protocol.getNome() + " deixou o chat!");
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(ProtocolServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
 
-        private void desconectado(Protocol protocol, ObjectOutputStream out) {
+        private void desconectadoC(Protocol protocol, ObjectOutputStream out) {
             on.remove(protocol.getNome());//pega este nome na lista e o remove
-            System.out.println("Adeus " + protocol.getNome());
-            protocol.setTexto("Volte sempre!");
-            protocol.setStatus(Status.MSG_PRIVADA);
-            msgParaTodos(protocol);
-            System.out.println(protocol.getNome() + " desconectou.");
-
+            System.out.println("Cliente " + protocol.getNome() + " Desconectou"); //msg no terminal
         }
 
-        private void addOnline() { //usado para atualizar nomes a lista dos conectados
+        private void desconectadoP(Protocol protocol, ObjectOutputStream out) {
+            proOn.remove(protocol.getNome());//pega este nome na lista e o remove
+            System.out.println("Profissional " + protocol.getNome() + " Desconectou"); //msg no terminal
+        }
+
+        private void desconectadoL(Protocol protocol, ObjectOutputStream out) {
+            locOn.remove(protocol.getNome());//pega este nome na lista e o remove
+            System.out.println("Locatário " + protocol.getNome() + " Desconectou"); //msg no terminal
+        }
+
+        private void addOnlineC() { //usado para atualizar nomes a lista dos conectados
             Set<String> nomesOnline = new HashSet<String>(); //cria a lista de nomes conectados
             for (Map.Entry<String, ObjectOutputStream> valorChave : on.entrySet()) { //percorre a lista com um ForEach
                 //   ↑ para cada nome na lista: faça o seginte:
@@ -162,24 +193,62 @@ public class ProtocolServer {
             }
             Protocol protocol = new Protocol(); //Cria um novo objeto na classe Protocol
             protocol.setStatus(Status.CLIENTES_ON);// vai no método status de Protocol, coloca na lista enumerada
-            protocol.setSetOn(nomesOnline); //coloca este nome no método SetOn.
+            protocol.setSetOn(nomesOnline); //Aqui preenche o set com todos os nomes
+            //↓ foreach para enviar para cada um dos usuarios do map a lista, incluindo a si mesmo
+            for (Map.Entry<String, ObjectOutputStream> valorChave : on.entrySet()) {
+                protocol.setNome(valorChave.getKey());
+                try {
+                    valorChave.getValue().writeObject(protocol);
+                } catch (Exception e) {
+                }
+            }
 
             /*CRIAR AQUI ABAIXO, OU DENTRO DO FOR UMA FORMA DE NÃO MOSTRAR PARA SI
        SEU PRÓPRIO NOME ONLINE,PARA NÃO CONVERSAR CONSIGO MESMO E CRIAR UMA EXEÇÃO*/
-            //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+           
+        }
+
+        private void addOnlineP() {
+            Set<String> nomesOnline = new HashSet<String>(); //cria a lista de nomes conectados
+            for (Map.Entry<String, ObjectOutputStream> valorChave : on.entrySet()) { //percorre a lista com um ForEach
+                nomesOnline.add(valorChave.getKey()); // pegue sua key e add na lista
+            }
+            Protocol protocol = new Protocol(); //Cria um novo objeto na classe Protocol
+            protocol.setStatus(Status.PROFISSIONAIS_ON);// vai no método status de Protocol, coloca na lista enumerada
+            protocol.setSetOn(nomesOnline); //Aqui preenche o set com todos os nomes
+
+            for (Map.Entry<String, ObjectOutputStream> valorChave : on.entrySet()) {
+                protocol.setNome(valorChave.getKey());
+                try {valorChave.getValue().writeObject(protocol);} catch (Exception e) {}
+            }
+        }
+
+        private void addOnlineLoc() {
+           Set<String> nomesOnline = new HashSet<String>(); //cria a lista de nomes conectados
+            for (Map.Entry<String, ObjectOutputStream> valorChave : on.entrySet()) { //percorre a lista com um ForEach
+                nomesOnline.add(valorChave.getKey()); // pegue sua key e add na lista
+            }
+            Protocol protocol = new Protocol(); //Cria um novo objeto na classe Protocol
+            protocol.setStatus(Status.LOCATARIOS_ON);// vai no método status de Protocol, coloca na lista enumerada
+            protocol.setSetOn(nomesOnline); //Aqui preenche o set com todos os nomes
+
+            for (Map.Entry<String, ObjectOutputStream> valorChave : on.entrySet()) {
+                protocol.setNome(valorChave.getKey());
+                try {valorChave.getValue().writeObject(protocol);} catch (Exception e) {}
+            }
+        }
         }
 
         private void msgParaTodos(Protocol protocol) { // usado para o profissional mandar msg para todos os clientes conectados
-            /*ForEach para percorrer a lista dos clientes conectados (on) e assim
+            /*ForEach para percorrer a lista dos usuarios conectados e assim
           Se o nome estiver na lista este irá receber a mensagem*/
             for (Map.Entry<String, ObjectOutputStream> pegaKey : on.entrySet()) {
-                if (!pegaKey.equals(protocol.getNome())) { //se o nome da lista não se repetir, capture seu nome
-                    protocol.setStatus(Status.MSG_PRIVADA); //Vai em protocol e usa o MSG_ENV
+                //a string "nome" está armz na key e o object é o valor e isso dá acesso ao método weite object
+                if (!pegaKey.equals(protocol.getNome())) { //se a key for diferente da pessoa que está mandando a mensagem...
+                    protocol.setStatus(Status.MSG_PRIVADA); //a msg é enviada pros usuarios que passaram no if
                     try {
-                        pegaKey.getValue().writeObject(protocol);
-                        //vai em protocol e escreve a msg neste objeto
-                    } catch (IOException ex) {
-                        Logger.getLogger(ProtocolServer.class.getName()).log(Level.SEVERE, null, ex);
+                        pegaKey.getValue().writeObject(protocol);//aqui passamos a msg
+                    } catch (Exception e) {
                     }
                 }
             }
@@ -187,29 +256,62 @@ public class ProtocolServer {
 
         private void msgIndividual(Protocol protocol) { // usado para o USUARIO mandar mensagens privadas
             //forEach com a mesma ideia do método anterior
-            for (Map.Entry<String, ObjectOutputStream> pegaKey : on.entrySet()) {
+            for (Map.Entry<String, ObjectOutputStream> pegaKey : on.entrySet()) {//percorre a lista
                 if (pegaKey.getKey().equals(protocol.getNomeNalista())) {
                     try {
                         //percorre a lista de nomes para escolher uma
                         pegaKey.getValue().writeObject(protocol);
-                    } catch (IOException ex) {
-                        Logger.getLogger(ProtocolServer.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (Exception e) {
                     }
                 }
             }
         }
+
         // ↓↓↓☻ conectou(Cria um método boleano para escrever em protocol setando que se queira)    
-        private boolean conectou(Protocol protocol, ObjectOutputStream out) {
-            if (on.size() == 0) {
-                protocol.setTexto("itsAlive"); //coloca atribui o texto apra vivi(online) para testar se ta on
-                envia(protocol, out); //usa a variável "envia" e retorna pro cliente a msg
+        private boolean conectouC(Protocol protocol, ObjectOutputStream out) {
+            if (on.size() == 0) { //se a lista tiver tamanho ZERO
+                protocol.setTexto("Online"); //atribui o texto pra online para testar se ta on
+                envia(protocol, out); //usa a variável "envia" e manda a msg Online
                 return true; // colcoa o boleano como true, conexão feita
-            } else if (on.containsKey(protocol.getNome())) { //se o nome digitado ja ta online
-                protocol.setTexto("notAlive"); //mumda esse texto
+            } else if (on.containsKey(protocol.getNome())) { //Percorre a lista, se o nome digitado ja ta online
+                protocol.setTexto("Offline"); //muda esse texto
                 envia(protocol, out);//envia
                 return false;//e não conecta
-            } else { //caso não
-                protocol.setTexto("itsAlive");
+            } else { //caso não tenha nenhum nem outro... (Isso nunca irá acontecer, ou alista tem alguém ou não tem ninguém, colocado apenas pra evitar bugs)
+                protocol.setTexto("Online");
+                envia(protocol, out);
+                return true;
+            }
+        }
+
+        private boolean conectouP(Protocol protocol, ObjectOutputStream out) {
+
+            if (proOn.size() == 0) { //se a lista tiver tamanho ZERO
+                protocol.setTexto("Online"); //atribui o texto pra online para testar se ta on
+                envia(protocol, out); //usa a variável "envia" e manda a msg Online
+                return true; // colcoa o boleano como true, conexão feita
+            } else if (on.containsKey(protocol.getNome())) { //Percorre a lista, se o nome digitado ja ta online
+                protocol.setTexto("Offline"); //muda esse texto
+                envia(protocol, out);//envia
+                return false;//e não conecta
+            } else { //caso não tenha nenhum nem outro... (Isso nunca irá acontecer, ou alista tem alguém ou não tem ninguém, colocado apenas pra evitar bugs)
+                protocol.setTexto("Online");
+                envia(protocol, out);
+                return true;
+            }
+        }
+
+        private boolean conectouL(Protocol protocol, ObjectOutputStream out) {
+            if (locOn.size() == 0) { //se a lista tiver tamanho ZERO
+                protocol.setTexto("Online"); //atribui o texto pra online para testar se ta on
+                envia(protocol, out); //usa a variável "envia" e manda a msg Online
+                return true; // colcoa o boleano como true, conexão feita
+            } else if (on.containsKey(protocol.getNome())) { //Percorre a lista, se o nome digitado ja ta online
+                protocol.setTexto("Offline"); //muda esse texto
+                envia(protocol, out);//envia
+                return false;//e não conecta
+            } else { //caso não tenha nenhum nem outro... (Isso nunca irá acontecer, ou alista tem alguém ou não tem ninguém, colocado apenas pra evitar bugs)
+                protocol.setTexto("Online");
                 envia(protocol, out);
                 return true;
             }
@@ -217,11 +319,9 @@ public class ProtocolServer {
 
         private void envia(Protocol protocol, ObjectOutputStream out) {
             try {
-                out.writeObject(protocol); // apartir da variavel out.emvia a msg com o metodo write (passando o protocol como parametro))escreve na saída do objeto a msg desejada 
+                out.writeObject(protocol); // a partir da variavel out. envia a msg com o metodo write (passando o protocol como parametro))escreve na saída do objeto a msg desejada 
             } catch (IOException ex) {
                 Logger.getLogger(ProtocolServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
-
-}
