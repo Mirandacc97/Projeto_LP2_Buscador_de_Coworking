@@ -4,7 +4,7 @@
  */
 package projetoLP2.App.frameClient;
 
-import java.awt.event.KeyEvent;
+import java.awt.Color;
 import projetoLP2.App.serviceProtocolService.ConectaCliente;
 import projetoLP2.AppChatProtocol.Protocol;
 import java.io.IOException;
@@ -13,7 +13,6 @@ import java.net.Socket;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.scene.control.Button;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
@@ -34,6 +33,11 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
      */
     public ProtocolClientFrame() { //construtor
         initComponents();
+        jPanelChat.setVisible(false);
+        jPanelAlugarLocal.setVisible(false);
+        jPanelChat.setVisible(false);
+        jPanelLocatario.setVisible(false);
+                
     }
 
     private class ListenerSocket implements Runnable { //inicia a Thread
@@ -43,7 +47,8 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         public ListenerSocket(Socket s) {
             try {
                 this.input = new ObjectInputStream(s.getInputStream());
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
 
         @Override
@@ -56,7 +61,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                         case CONECTADO:
                             conectar(protocol);
                             break;
-                        case DESCONECTADOC:
+                        case DESCONECTADO:
                             desconectar(); //Chama o método desconectar
                             s.close(); // fecha o socket 
                             //(BUG encontrado quando era colocado no método,
@@ -67,9 +72,9 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                             System.out.println("Você diz: " + protocol.getTexto());
                             msg_recebida(protocol);
                             break;
-                        case PROFISSIONAIS_ON:
-                            pro_online(protocol);
-                            break;
+                        case CLIENTES_ON:
+                            clienteOnlines(protocol);
+                            break;                       
                         default:
                             break;
                     }
@@ -90,7 +95,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         }
         //O else aqui é implícito, caso não seja "offline", então ele irá conectar,então faça o que está abaixo
         this.protocol = protocol; //Pega o objeto protocol e passa o valor que recebemos como msg
-        this.btnConnectar.setEnabled(false); //desabilita este botão
+        this.btnConnectarCliente.setEnabled(false); //desabilita este botão
         this.txtName.setEditable(false); //não deixa mais mudar o nome na JTextField
 
         this.btnSair.setEnabled(true); //habilita este botão
@@ -108,14 +113,14 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         this.txtAreaSend.setEnabled(false);
         this.txtAreaReceive.setEnabled(false);
         //◙ BOTÕES
-        this.btnConnectar.setEnabled(true);
+        this.btnConnectarCliente.setEnabled(true);
         this.btnSair.setEnabled(false);
         this.btnEnviar.setEnabled(false);
         this.btnLimpar.setEnabled(false);
         //♫ LIMPA AS CAIXAS DE TEXTO
         this.txtAreaReceive.setText("");
         this.txtAreaSend.setText("");
-        
+
         System.out.println(":::Desconectado:::");
 
         JOptionPane.showMessageDialog(this, "CONEXÃO PERDIDA!"); //POP UP!
@@ -126,22 +131,21 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         //o apend permite acumular várias msg que chegam e não precisa substituir uma msg por outra
     }
 
-    private void pro_online(Protocol protocol) {
+    public void clienteOnlines(Protocol protocol) {
         System.out.println(protocol.getSetOn().toString());//teste no console 
-        
-        Set<String> proNames = protocol.getSetOn(); //uma set de string para recuperar quem ta on
-        
-        // proNames.remove(protocol.getNome()); //serve para remover o proprio nome da lista. como o cluente n ve outro cliente, então tando faz
-        
-        String[] array = (String[]) proNames.toArray(new String[proNames.size()]);//o jlist so aceita um array
-        //faz o array ter exatamente o mesmo tamanho do das strings
-        
-        //↓ propriedades usadas no jList para seu funcionamento
-        this.listOnlines.setListData(array); //passar o array para o jList
-        this.listOnlines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //serve para aceitar ser um nome selecionado, sem isso era possivel selecionar vários
-        this.listOnlines.setLayoutOrientation(JList.VERTICAL); //organiza os nomes verticalmente
-    }
 
+        Set<String> NamesC = protocol.getSetOn(); //uma set de string para recuperar quem ta on
+
+        // proNames.remove(protocol.getNome()); //serve para remover o proprio nome da lista. como o cluente n ve outro cliente, então tando faz
+        String[] array = (String[]) NamesC.toArray(new String[NamesC.size()]);//o jlist so aceita um array
+        //faz o array ter exatamente o mesmo tamanho do das strings
+
+        //↓ propriedades usadas no jList para seu funcionamento
+       this.listOnlines.setListData(array); //passar o array para o jList
+       this.listOnlines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //serve para aceitar ser um nome selecionado, sem isso era possivel selecionar vários
+       this.listOnlines.setLayoutOrientation(JList.VERTICAL); //organiza os nomes verticalmente
+    }
+   
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -151,46 +155,203 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanelAlugarLocal = new javax.swing.JPanel();
+        jLabelNomeProfissional = new javax.swing.JLabel();
+        jTextSuaPro = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jListLocais = new javax.swing.JList<>();
+        jLabel3 = new javax.swing.JLabel();
+        jRadioButton9 = new javax.swing.JRadioButton();
+        jRadioButton10 = new javax.swing.JRadioButton();
+        jRadioButton11 = new javax.swing.JRadioButton();
+        jRadioButton12 = new javax.swing.JRadioButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabelValorUnico = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        jLabelValorTotal = new javax.swing.JLabel();
+        jButtonAluAndChat = new javax.swing.JButton();
+        jLabel6 = new javax.swing.JLabel();
+        jPanelInicial = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         txtName = new javax.swing.JTextField();
-        btnConnectar = new javax.swing.JButton();
-        btnSair = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        listOnlines = new javax.swing.JList();
+        btnConnectarCliente = new javax.swing.JButton();
+        btnConnectarProf = new javax.swing.JButton();
+        btnConnectarLoc = new javax.swing.JButton();
+        jPanelChat = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtAreaSend = new javax.swing.JTextArea();
         btnEnviar = new javax.swing.JButton();
-        btnLimpar = new javax.swing.JButton();
+        btnSair = new javax.swing.JButton();
+        jPanelTelaContratar = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
+        txtNomeProf = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
+        txtProfProf = new javax.swing.JLabel();
         jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
         jRadioButton3 = new javax.swing.JRadioButton();
+        jRadioButton2 = new javax.swing.JRadioButton();
         jRadioButton4 = new javax.swing.JRadioButton();
         jButton1 = new javax.swing.JButton();
-        txtNomeProf = new javax.swing.JLabel();
-        txtProfProf = new javax.swing.JLabel();
+        btnLimpar = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        listOnlines = new javax.swing.JList();
+        jLabelSeuNome = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtAreaReceive = new javax.swing.JTextArea();
+        jPanelLocatario = new javax.swing.JPanel();
+        jLabelNomeLocatario = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        jRadioButton5 = new javax.swing.JRadioButton();
+        jLabel4 = new javax.swing.JLabel();
+        jRadioButton6 = new javax.swing.JRadioButton();
+        jRadioButton7 = new javax.swing.JRadioButton();
+        jRadioButton8 = new javax.swing.JRadioButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Conectar"));
+        jPanelAlugarLocal.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jPanelAlugarLocal.setToolTipText("Alugar um Espaço");
 
-        btnConnectar.setText("Connectar");
-        btnConnectar.addActionListener(new java.awt.event.ActionListener() {
+        jLabelNomeProfissional.setText("Sua Profissão");
+
+        jListLocais.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(jListLocais);
+
+        jLabel3.setText("Horários");
+
+        jRadioButton9.setText("08-10");
+
+        jRadioButton10.setText("10-12");
+
+        jRadioButton11.setText("14-16");
+
+        jRadioButton12.setText("16-18");
+
+        jLabel5.setText("Valor por tempo");
+
+        jLabelValorUnico.setText("R$");
+
+        jLabel7.setText("TOTAL:");
+
+        jLabelValorTotal.setText("R$");
+
+        jButtonAluAndChat.setText("Alugar e falar com clientes");
+        jButtonAluAndChat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConnectarActionPerformed(evt);
+                jButtonAluAndChatActionPerformed(evt);
             }
         });
 
-        btnSair.setText("Sair");
-        btnSair.setEnabled(false);
-        btnSair.addActionListener(new java.awt.event.ActionListener() {
+        jLabel6.setText("↓ Locais disponíveis ↓");
+
+        javax.swing.GroupLayout jPanelAlugarLocalLayout = new javax.swing.GroupLayout(jPanelAlugarLocal);
+        jPanelAlugarLocal.setLayout(jPanelAlugarLocalLayout);
+        jPanelAlugarLocalLayout.setHorizontalGroup(
+            jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabelNomeProfissional)
+                    .addComponent(jTextSuaPro, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
+                        .addGap(224, 224, 224)
+                        .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel7))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelValorTotal)
+                            .addComponent(jLabelValorUnico)))
+                    .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
+                        .addGap(246, 246, 246)
+                        .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel3)
+                            .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jRadioButton10)
+                                .addComponent(jRadioButton9)
+                                .addComponent(jRadioButton11)
+                                .addComponent(jRadioButton12)))))
+                .addContainerGap(31, Short.MAX_VALUE))
+            .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButtonAluAndChat, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
+                        .addGap(9, 9, 9)
+                        .addComponent(jLabel6)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanelAlugarLocalLayout.setVerticalGroup(
+            jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
+                .addGap(61, 61, 61)
+                .addComponent(jLabelNomeProfissional)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextSuaPro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel6)
+                        .addGap(2, 2, 2)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButton9)
+                        .addGap(18, 18, 18)
+                        .addComponent(jRadioButton10)
+                        .addGap(35, 35, 35)
+                        .addComponent(jRadioButton11)
+                        .addGap(27, 27, 27)
+                        .addComponent(jRadioButton12)
+                        .addGap(28, 28, 28)
+                        .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabelValorUnico))
+                        .addGap(18, 18, 18)
+                        .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel7)
+                            .addComponent(jLabelValorTotal))))
+                .addGap(18, 18, 18)
+                .addComponent(jButtonAluAndChat, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Digite seu nome"));
+
+        txtName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSairActionPerformed(evt);
+                txtNameActionPerformed(evt);
+            }
+        });
+
+        btnConnectarCliente.setText("Cliente");
+        btnConnectarCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConnectarClienteActionPerformed(evt);
+            }
+        });
+
+        btnConnectarProf.setText("Profissional");
+        btnConnectarProf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConnectarProfActionPerformed(evt);
+            }
+        });
+
+        btnConnectarLoc.setText("Locatário");
+        btnConnectarLoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConnectarLocActionPerformed(evt);
             }
         });
 
@@ -200,37 +361,41 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(txtName)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnConnectar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnSair)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnConnectarCliente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtName, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnConnectarProf, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnConnectarLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(btnConnectar)
-                .addComponent(btnSair))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addComponent(txtName, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnConnectarCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnConnectarProf, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnConnectarLoc, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(32, 32, 32))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Profissionais Online"));
-
-        jScrollPane3.setViewportView(listOnlines);
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPanelInicialLayout = new javax.swing.GroupLayout(jPanelInicial);
+        jPanelInicial.setLayout(jPanelInicialLayout);
+        jPanelInicialLayout.setHorizontalGroup(
+            jPanelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanelInicialLayout.setVerticalGroup(
+            jPanelInicialLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelInicialLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(71, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -248,6 +413,84 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             }
         });
 
+        btnSair.setText("Sair");
+        btnSair.setEnabled(false);
+        btnSair.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSairActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setText("Nome:");
+
+        txtNomeProf.setText("NOME");
+
+        jLabel2.setText("Profissão:");
+
+        txtProfProf.setText("PROFISSÂO");
+
+        jRadioButton1.setText("8-10");
+
+        jRadioButton3.setText("14-16");
+
+        jRadioButton2.setText("10-12");
+
+        jRadioButton4.setText("16-18");
+
+        jButton1.setText("Contratar");
+
+        javax.swing.GroupLayout jPanelTelaContratarLayout = new javax.swing.GroupLayout(jPanelTelaContratar);
+        jPanelTelaContratar.setLayout(jPanelTelaContratarLayout);
+        jPanelTelaContratarLayout.setHorizontalGroup(
+            jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jRadioButton1)
+                .addGap(18, 18, 18)
+                .addComponent(jRadioButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRadioButton3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRadioButton4)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
+                .addGap(16, 16, 16)
+                .addGroup(jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtProfProf)
+                    .addComponent(jLabel2)
+                    .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(26, 26, 26)
+                        .addComponent(txtNomeProf)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
+        );
+        jPanelTelaContratarLayout.setVerticalGroup(
+            jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
+                .addGroup(jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(txtNomeProf))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(txtProfProf))
+                    .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jRadioButton1)
+                    .addComponent(jRadioButton3)
+                    .addComponent(jRadioButton2)
+                    .addComponent(jRadioButton4))
+                .addGap(24, 24, 24))
+        );
+
         btnLimpar.setText("Limpar");
         btnLimpar.setEnabled(false);
         btnLimpar.addActionListener(new java.awt.event.ActionListener() {
@@ -256,24 +499,6 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Nome:");
-
-        jLabel2.setText("Profissão:");
-
-        jRadioButton1.setText("8-10");
-
-        jRadioButton2.setText("10-12");
-
-        jRadioButton3.setText("14-16");
-
-        jRadioButton4.setText("16-18");
-
-        jButton1.setText("Contratar");
-
-        txtNomeProf.setText("NOME");
-
-        txtProfProf.setText("PROFISSÂO");
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -281,65 +506,63 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(btnLimpar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnEnviar))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEnviar)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addComponent(jRadioButton2)
-                                .addGap(36, 36, 36)
-                                .addComponent(jRadioButton4))
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addComponent(jLabel1)
-                                    .addGap(41, 41, 41)
-                                    .addComponent(txtNomeProf))
-                                .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addComponent(jLabel2)
-                                    .addGap(18, 18, 18)
-                                    .addComponent(txtProfProf))
-                                .addGroup(jPanel3Layout.createSequentialGroup()
-                                    .addComponent(jRadioButton1)
-                                    .addGap(43, 43, 43)
-                                    .addComponent(jRadioButton3))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1)
-                        .addGap(9, 9, 9)))
+                                .addGap(18, 18, 18)
+                                .addComponent(btnLimpar)
+                                .addGap(0, 1, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jPanelTelaContratar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLimpar)
-                    .addComponent(btnEnviar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(txtNomeProf))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
-                            .addComponent(txtProfProf))
+                        .addComponent(btnLimpar)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton1)
-                            .addComponent(jRadioButton3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton4)
-                            .addComponent(jRadioButton2)))
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(45, 45, 45))
+                        .addComponent(btnSair))
+                    .addComponent(btnEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jPanelTelaContratar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(10, Short.MAX_VALUE))
+        );
+
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Onlines"));
+
+        listOnlines.setBackground(new java.awt.Color(204, 255, 204));
+        listOnlines.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
+        jScrollPane4.setViewportView(listOnlines);
+
+        jLabelSeuNome.setFont(new java.awt.Font("sansserif", 1, 12)); // NOI18N
+        jLabelSeuNome.setText("Seu Nome");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(jLabelSeuNome)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(jLabelSeuNome)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane4)
+                .addContainerGap())
         );
 
         txtAreaReceive.setEditable(false);
@@ -348,39 +571,155 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         txtAreaReceive.setEnabled(false);
         jScrollPane1.setViewportView(txtAreaReceive);
 
+        javax.swing.GroupLayout jPanelChatLayout = new javax.swing.GroupLayout(jPanelChat);
+        jPanelChat.setLayout(jPanelChatLayout);
+        jPanelChatLayout.setHorizontalGroup(
+            jPanelChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChatLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanelChatLayout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanelChatLayout.setVerticalGroup(
+            jPanelChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelChatLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelChatLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanelChatLayout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jLabelNomeLocatario.setText("NOME");
+
+        jTextField1.setText("Localização");
+
+        jRadioButton5.setText("08-10");
+
+        jLabel4.setText("Horários Disponíveis");
+
+        jRadioButton6.setText("10-12");
+
+        jRadioButton7.setText("14-16");
+
+        jRadioButton8.setText("16-18");
+
+        jButton2.setText("Cadastrar");
+
+        javax.swing.GroupLayout jPanelLocatarioLayout = new javax.swing.GroupLayout(jPanelLocatario);
+        jPanelLocatario.setLayout(jPanelLocatarioLayout);
+        jPanelLocatarioLayout.setHorizontalGroup(
+            jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelLocatarioLayout.createSequentialGroup()
+                .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanelLocatarioLayout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabelNomeLocatario)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanelLocatarioLayout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(jLabel4))
+                    .addGroup(jPanelLocatarioLayout.createSequentialGroup()
+                        .addGap(66, 66, 66)
+                        .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jRadioButton6)
+                            .addComponent(jRadioButton5))
+                        .addGap(62, 62, 62)
+                        .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jRadioButton7)
+                            .addComponent(jRadioButton8)))
+                    .addGroup(jPanelLocatarioLayout.createSequentialGroup()
+                        .addGap(66, 66, 66)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(64, Short.MAX_VALUE))
+        );
+        jPanelLocatarioLayout.setVerticalGroup(
+            jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelLocatarioLayout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addComponent(jLabelNomeLocatario)
+                .addGap(64, 64, 64)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addComponent(jLabel4)
+                .addGap(31, 31, 31)
+                .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jRadioButton5)
+                    .addComponent(jRadioButton7))
+                .addGap(36, 36, 36)
+                .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jRadioButton6)
+                    .addComponent(jRadioButton8))
+                .addGap(67, 67, 67)
+                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(58, Short.MAX_VALUE))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+            .addGap(0, 468, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanelAlugarLocal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanelInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanelChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanelLocatario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(22, 22, 22)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 218, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+            .addGap(0, 546, Short.MAX_VALUE)
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanelAlugarLocal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanelInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanelChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanelLocatario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(0, 0, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnConnectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectarActionPerformed
+    private void btnConnectarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectarClienteActionPerformed
         String name = this.txtName.getText(); //pega o nome que esta na caixa de diálogo
 
         if (!name.isEmpty()) { //Teste para não conectar sem nome, se tem nome digitado...
@@ -394,14 +733,17 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             new Thread(new ListenerSocket(this.s)).start(); //com os dados preenchidos, inicia a Thread
 
             this.conectaCliente.enviar(protocol); //chama o método enviar no conecta Cliente
+            this.jPanelInicial.setVisible(false);
+            this.jPanelChat.setVisible(true);
+            this.jLabelSeuNome.setText(name);
         }
-    }//GEN-LAST:event_btnConnectarActionPerformed
+    }//GEN-LAST:event_btnConnectarClienteActionPerformed
 
     private void btnSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSairActionPerformed
         //o botão sair desconecta sem que o programa feche, permitindo reconectar
         Protocol protocol = new Protocol();//instancia essa ação
         protocol.setNome(this.protocol.getNome()); //coloca o nome desse usuario no protocol
-        protocol.setStatus(Status.DESCONECTADOC);//Setamos seu status
+        protocol.setStatus(Status.DESCONECTADO);//Setamos seu status
         this.conectaCliente.enviar(protocol);//envia esse status para o servidor
         desconectar();
     }//GEN-LAST:event_btnSairActionPerformed
@@ -411,56 +753,151 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void btnEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEnviarActionPerformed
-        
+
         String text = this.txtAreaSend.getText(); //Cria variavesrecuperadas desta area
         String name = this.protocol.getNome(); //captura o nome
-        
+
         this.protocol = new Protocol(); // cria a instancia
-        
+
         if (this.listOnlines.getSelectedIndex() > -1) { //Teste para testar um nome selecionado
             //no jList há um método getSelectedIndex que fica com -1 se n estiver ninguém selecionado
             //por isso esse if diz: Se for maior que -1, então está selecionado
             this.protocol.setNomeNalista((String) this.listOnlines.getSelectedValue()); //cast pra string para poder setar
-            this.txtAreaSend.setEnabled(true); 
-            this.btnEnviar.setEnabled(true);
-            this.btnLimpar.setEnabled(true);
             this.protocol.setStatus(Status.MSG_PRIVADA); //envia a msg para o selecionado
             this.listOnlines.clearSelection(); // limpa a seleção para não ficar eternamente selecionado
         } else {
-           this.protocol.setStatus(Status.MSG_ENV);// Sua ação é feita para enviar msg a todos
-          //JOptionPane.showMessageDialog(this, "SELECIONE UM PROFISSIONAL!"); //Isso não irá acontecer, pois o campo de escrever so fica ativo quando seleciona um profissional
+            this.protocol.setStatus(Status.MSG_ENV);// Sua ação é feita para enviar msg a todos
+            //JOptionPane.showMessageDialog(this, "SELECIONE UM PROFISSIONAL!"); //Isso não irá acontecer, pois o campo de escrever so fica ativo quando seleciona um profissional
         }
-        
+
         if (!text.isEmpty()) {//assim, quando algo na String
             this.protocol.setNome(name); //seta o nome no protocol
             this.protocol.setTexto(text); //e seta o texto figitado na string
 
-            //this.txtAreaReceive.append("Você disse: " + text + "\n"); //escreve na area de texto recebida com um append(append permute escrever de forma acumulada)
-            
+            this.txtAreaReceive.append("Você disse: " + text + "\n"); //escreve na area de texto recebida com um append(append permute escrever de forma acumulada)
+
             this.conectaCliente.enviar(this.protocol); //chama o método enviar
         }
-        
+
         this.txtAreaSend.setText(""); //limpa automaticamente a area apos enviar a msg
     }//GEN-LAST:event_btnEnviarActionPerformed
 
+    private void txtNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNameActionPerformed
+
+    private void btnConnectarProfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectarProfActionPerformed
+        // TODO add your handling code here:
+            this.jPanelInicial.setVisible(false);
+            this.jPanelAlugarLocal.setVisible(true);
+        
+    }//GEN-LAST:event_btnConnectarProfActionPerformed
+
+    private void btnConnectarLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectarLocActionPerformed
+        // TODO add your handling code here:
+        //String name = this.txtName.getText(); //captura o nome
+        //this.jLabelNomeLocatario.setText(name); //coloca na Label
+        this.jPanelInicial.setVisible(false);
+        this.jPanelLocatario.setVisible(true);
+    }//GEN-LAST:event_btnConnectarLocActionPerformed
+
+    private void jButtonAluAndChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButtonAluAndChatActionPerformed
+        Color cor = Color.RED;
+        String name = this.txtName.getText(); //pega o nome que esta na caixa de diálogo
+        String profi = this.jTextSuaPro.getText();
+        
+
+        if (!name.isEmpty() && !profi.isEmpty()){ //Teste para não conectar sem nome, se tem nome digitado...
+            this.protocol = new Protocol(); //INICIA(instancia) o objeto
+            this.protocol.setStatus(Status.CONECTADO); //Seta o Status DO CLIENTE em Protocol
+            this.protocol.setNome("["+profi+"] "+ name);// seta o nome do cliente
+
+            this.conectaCliente = new ConectaCliente(); //inicia uma nova Thread socket que está enste objeto
+            this.s = this.conectaCliente.connect(); //inicia o método conecta que retorna o socket
+
+            new Thread(new ListenerSocket(this.s)).start(); //com os dados preenchidos, inicia a Thread
+
+            this.conectaCliente.enviar(protocol); //chama o método enviar no conecta Cliente
+            //this.jPanelInicial.setVisible(false);
+            this.jPanelAlugarLocal.setVisible(false);
+            this.jPanelChat.setVisible(true);
+            this.jPanelTelaContratar.setVisible(false);
+            this.jLabelSeuNome.setText(profi+": "+name);
+        }
+// TODO add your handling code here:
+        /*
+        String name = this.txtName.getText(); //pega o nome que esta na caixa de diálogo
+        String profi = this.txtNomeProf.getText();        
+
+        if (!name.isEmpty()) { 
+        this.protocol = new Protocol();
+        //INICIA(instancia) o objeto
+        this.protocol.setStatus(Status.CONECTADO); //Seta o Status DO CLIENTE em Protocol
+        this.protocol.setNome(profi + " " + name);// seta o nome do cliente
+
+        this.conectaCliente = new ConectaCliente(); //inicia uma nova Thread socket que está enste objeto
+        this.s = this.conectaCliente.connect(); //inicia o método conecta que retorna o socket
+
+        new Thread(new ListenerSocket(this.s)).start(); //com os dados preenchidos, inicia a Thread
+
+        this.conectaCliente.enviar(protocol);
+       
+        this.jPanelAlugarLocal.setVisible(false);
+        this.jPanelChat.setVisible(true);
+        this.jPanelTelaContratar.setEnabled(false);
+        }
+ */       
+    }//GEN-LAST:event_jButtonAluAndChatActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnConnectar;
+    private javax.swing.JButton btnConnectarCliente;
+    private javax.swing.JButton btnConnectarLoc;
+    private javax.swing.JButton btnConnectarProf;
     private javax.swing.JButton btnEnviar;
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnSair;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButtonAluAndChat;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabelNomeLocatario;
+    private javax.swing.JLabel jLabelNomeProfissional;
+    private javax.swing.JLabel jLabelSeuNome;
+    private javax.swing.JLabel jLabelValorTotal;
+    private javax.swing.JLabel jLabelValorUnico;
+    private javax.swing.JList<String> jListLocais;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanelAlugarLocal;
+    private javax.swing.JPanel jPanelChat;
+    private javax.swing.JPanel jPanelInicial;
+    private javax.swing.JPanel jPanelLocatario;
+    private javax.swing.JPanel jPanelTelaContratar;
     private javax.swing.JRadioButton jRadioButton1;
+    private javax.swing.JRadioButton jRadioButton10;
+    private javax.swing.JRadioButton jRadioButton11;
+    private javax.swing.JRadioButton jRadioButton12;
     private javax.swing.JRadioButton jRadioButton2;
     private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JRadioButton jRadioButton4;
+    private javax.swing.JRadioButton jRadioButton5;
+    private javax.swing.JRadioButton jRadioButton6;
+    private javax.swing.JRadioButton jRadioButton7;
+    private javax.swing.JRadioButton jRadioButton8;
+    private javax.swing.JRadioButton jRadioButton9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextSuaPro;
     private javax.swing.JList listOnlines;
     private javax.swing.JTextArea txtAreaReceive;
     private javax.swing.JTextArea txtAreaSend;

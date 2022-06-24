@@ -5,7 +5,6 @@
 package projetoLP2.App;
 
 import projetoLP2.App.frameClient.ProtocolClientFrame;
-import projetoLP2.App.frameSelect.TelaSelect;
 
 /**
  *
@@ -44,7 +43,7 @@ public class ProtocolClient {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new TelaSelect().setVisible(true);
+                new ProtocolClientFrame().setVisible(true);
             }
         });
     }

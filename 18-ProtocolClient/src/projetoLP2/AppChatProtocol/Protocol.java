@@ -1,5 +1,10 @@
 /*
- *
+ * Diferente de um chat, nosso programa não vai trabalhar com uma classe String
+ * e sim com o objeto protocol. è como se fosse uma caixa onde dentro dela estivessem
+ * todas essas informações. E dependendo da situação, poderemos detalahr o que precisaremos
+ * Se é o nome do cliente ou o texto da msg, ou o nome do profissional, ou o local onde sera feito o aluguel, etc;
+ * É simular ao Protocol ensinado em aula, mas
+ * é adaptado a realidade nosso código que utiliza o JavaSwing
  */
 package projetoLP2.AppChatProtocol;
 
@@ -15,10 +20,10 @@ public class Protocol implements Serializable{
     
     /*variáveis de instancia*/    
     private String nome; //aramazena o nome do conectado
+    private String profissao;
     private String nomeNalista; //aramazena o nome do conectado que irá receber uma msg privada
     private String texto; //aramazena o texto da mensagem
-    private String profissional; //armazena o nome do progissional
-     
+       
     /*Usamos a lista Set por ter apenas valores únicos e por não precisarmos de
     um INDEX. Não precisamos de uma ordem exata das posições dos participantes
     que estão online no servidor*/
@@ -30,9 +35,9 @@ public class Protocol implements Serializable{
     private Status status;//Um enumerado(mas facil que variaveis estáticas)
   
     public enum Status { //pra cada msg enviada para o servidor ele vai dizer qual é a ação que ele quer executar
-        CONECTADO, CONECTADO_PRO, CONECTADO_LOC, DESCONECTADOC, DESCONECTADOP, DESCONECTADOL,
-        MSG_ENV, MSG_PRIVADA,CLIENTES_ON, PROFISSIONAIS_ON, LOCATARIOS_ON,LOCAL,
-        HORARIO_UM, HORARIO_DOIS, HORARIO_TRES, HORARIO_QUATRO
+        CONECTADO, DESCONECTADO,
+        MSG_ENV, MSG_PRIVADA,
+        CLIENTES_ON
         
         /*enun estende a clase java.lang.enum, como como não precisa de herança multipla
         escolhemos enum, ao invés de static, por ser mais prático, pois todos os valores
@@ -52,16 +57,21 @@ public class Protocol implements Serializable{
         return nome;
     }
 
+    public String getProfissao() {
+        return profissao;
+    }
+
+    public void setProfissao(String profissao) {
+        this.profissao = profissao;
+    }
+    
+
     public String getNomeNalista() {
         return nomeNalista;
     }
 
     public String getTexto() {
         return texto;
-    }
-
-    public String getProfissional() {
-        return profissional;
     }
 
     public Set<String> getSetOn() {
@@ -80,11 +90,7 @@ public class Protocol implements Serializable{
         this.texto = texto;
     }
 
-    public void setProfissional(String profissional) {
-        this.profissional = profissional;
-    }
-
     public void setSetOn(Set<String> setOn) {
         this.setOn = setOn;
-    }  
+    }
 }
