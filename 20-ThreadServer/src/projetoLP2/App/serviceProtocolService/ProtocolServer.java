@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  *
  * @author Marcus
@@ -28,6 +29,7 @@ public class ProtocolServer {
     private Socket ns;
     //↓Uma Map que contém como CHAVE uma String e como VALOR um ObjectOutputStream
     private Map<String, ObjectOutputStream> on = new HashMap<String, ObjectOutputStream>();   //lista online Cliente
+    private Map<String, ObjectOutputStream> cadList = new HashMap<String, ObjectOutputStream>();
 
     /*Na lista Map listamos os usuarios online no servidor, mas os nomes deles não podem ser
     iguais. O usuário(key) é uma String e temos também seu ObjectOutputStream(value),
@@ -88,13 +90,13 @@ public class ProtocolServer {
                             if (conectou) { //no caso dele conectar...
                                 on.put(protocol.getNome(), out); //coloca o nome na lista dos  CLIENTES conectados
                                 System.out.println(protocol.getNome() + " CONECTADO");
-                                addOnline(); //chama este método, sempre que um cliente conecta a lista é atualizada
+                                refreshOnline(); //chama este método, sempre que um cliente conecta a lista é atualizada
                             }
                             break;
                         case DESCONECTADO:
                             // usuario quer deixar o chat
                             desconectado(protocol, out); //chama o método
-                            addOnline(); //atualiza a lista que não terá o nome do desconectado nela
+                            refreshOnline(); //atualiza a lista que não terá o nome do desconectado nela
                             return;//Força o fechamento do while:::: https://www.delftstack.com/pt/howto/java/exit-while-loop-in-java/ :::
                         case MSG_ENV:
                             //manda msg a todos no chat
@@ -108,6 +110,7 @@ public class ProtocolServer {
                             break;
                     }
                 }
+
             } catch (IOException ex) {
                 System.out.println(protocol.getNome() + " deixou o chat!");
             } catch (ClassNotFoundException ex) {
@@ -121,7 +124,7 @@ public class ProtocolServer {
         System.out.println("Cliente " + protocol.getNome() + " Desconectou"); //msg no terminal
     }
 
-    private void addOnline() { //usado para atualizar nomes a lista dos conectados
+    private void refreshOnline() { //usado para atualizar nomes a lista dos conectados
         Set<String> nomesOnline = new HashSet<String>(); //cria a lista de nomes conectados
         for (Map.Entry<String, ObjectOutputStream> valorChave : on.entrySet()) { //percorre a lista com um ForEach
             //   ↑ para cada nome na lista: faça o seginte:
@@ -191,8 +194,7 @@ public class ProtocolServer {
             envia(protocol, out);
             return true;
         }
-    }
-    
+    }   
     private void envia(Protocol protocol, ObjectOutputStream out) {
         try {
             out.writeObject(protocol); // a partir da variavel out. envia a msg com o metodo write (passando o protocol como parametro))escreve na saída do objeto a msg desejada 

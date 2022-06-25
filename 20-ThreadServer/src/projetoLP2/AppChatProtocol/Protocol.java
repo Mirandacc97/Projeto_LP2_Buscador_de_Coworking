@@ -20,6 +20,7 @@ public class Protocol implements Serializable{
     
     /*variáveis de instancia*/    
     private String nome; //aramazena o nome do conectado
+    private String nomeL;
     private String profissao;
     private String nomeNalista; //aramazena o nome do conectado que irá receber uma msg privada
     private String texto; //aramazena o texto da mensagem
@@ -37,7 +38,7 @@ public class Protocol implements Serializable{
     public enum Status { //pra cada msg enviada para o servidor ele vai dizer qual é a ação que ele quer executar
         CONECTADO, DESCONECTADO,
         MSG_ENV, MSG_PRIVADA,
-        CLIENTES_ON
+        CLIENTES_ON, LOC
         
         /*enun estende a clase java.lang.enum, como como não precisa de herança multipla
         escolhemos enum, ao invés de static, por ser mais prático, pois todos os valores
@@ -55,6 +56,10 @@ public class Protocol implements Serializable{
 
     public String getNome() {
         return nome;
+    }
+
+    public String getNomeL() {
+        return nomeL;
     }
 
     public String getProfissao() {
@@ -82,6 +87,10 @@ public class Protocol implements Serializable{
         this.nome = nome;
     }
 
+    public void setNomeL(String nomeL) {
+        this.nomeL = nomeL;
+    }
+    
     public void setNomeNalista(String nomeNalista) {
         this.nomeNalista = nomeNalista;
     }

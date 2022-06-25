@@ -12,6 +12,7 @@ import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
 /**
  *
  * @author Marcus
@@ -37,6 +38,5 @@ public class ConectaCliente {
             out.writeObject(protocol); //através ObjectOutputstream ele escreve no objeto com o writeObject
         } catch (Exception e) {}
     }
-
     
 }

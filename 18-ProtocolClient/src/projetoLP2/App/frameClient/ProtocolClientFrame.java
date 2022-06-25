@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import projetoLP2.AppChatProtocol.Protocol.Status;
 
+
 /**
  *
  * @author Marcio Ballem
@@ -37,7 +38,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         jPanelAlugarLocal.setVisible(false);
         jPanelChat.setVisible(false);
         jPanelLocatario.setVisible(false);
-                
+
     }
 
     private class ListenerSocket implements Runnable { //inicia a Thread
@@ -74,7 +75,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                             break;
                         case CLIENTES_ON:
                             clienteOnlines(protocol);
-                            break;                       
+                            break;
                         default:
                             break;
                     }
@@ -85,6 +86,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                 Logger.getLogger(ProtocolClientFrame.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
     }
 
     private void conectar(Protocol protocol) {//método para preencher o protocol na lista enumerada do CONECTAR
@@ -105,7 +107,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         this.btnLimpar.setEnabled(true); //habilita o botão limpar
 
         JOptionPane.showMessageDialog(this, "Conexão estabelecida."); //POP UP
-    }
+    } 
 
     private void desconectar() { //apenas habilita ou desabilita itens na tela
         //☼ ↓AREAS DE TEXTO
@@ -141,11 +143,14 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         //faz o array ter exatamente o mesmo tamanho do das strings
 
         //↓ propriedades usadas no jList para seu funcionamento
-       this.listOnlines.setListData(array); //passar o array para o jList
-       this.listOnlines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //serve para aceitar ser um nome selecionado, sem isso era possivel selecionar vários
-       this.listOnlines.setLayoutOrientation(JList.VERTICAL); //organiza os nomes verticalmente
-    }
-   
+        this.listOnlines.setListData(array); //passar o array para o jList
+        this.listOnlines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //serve para aceitar ser um nome selecionado, sem isso era possivel selecionar vários
+        this.listOnlines.setLayoutOrientation(JList.VERTICAL); //organiza os nomes verticalmente
+        this.listOnlines1.setListData(array); //passar o array para o jList
+        //this.listOnlines1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //serve para aceitar ser um nome selecionado, sem isso era possivel selecionar vários
+        this.listOnlines1.setLayoutOrientation(JList.VERTICAL);
+    }   
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -158,19 +163,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         jPanelAlugarLocal = new javax.swing.JPanel();
         jLabelNomeProfissional = new javax.swing.JLabel();
         jTextSuaPro = new javax.swing.JTextField();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        jListLocais = new javax.swing.JList<>();
-        jLabel3 = new javax.swing.JLabel();
-        jRadioButton9 = new javax.swing.JRadioButton();
-        jRadioButton10 = new javax.swing.JRadioButton();
-        jRadioButton11 = new javax.swing.JRadioButton();
-        jRadioButton12 = new javax.swing.JRadioButton();
-        jLabel5 = new javax.swing.JLabel();
-        jLabelValorUnico = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabelValorTotal = new javax.swing.JLabel();
         jButtonAluAndChat = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
         jPanelInicial = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         txtName = new javax.swing.JTextField();
@@ -183,17 +176,9 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         txtAreaSend = new javax.swing.JTextArea();
         btnEnviar = new javax.swing.JButton();
         btnSair = new javax.swing.JButton();
-        jPanelTelaContratar = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        txtNomeProf = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        txtProfProf = new javax.swing.JLabel();
-        jRadioButton1 = new javax.swing.JRadioButton();
-        jRadioButton3 = new javax.swing.JRadioButton();
-        jRadioButton2 = new javax.swing.JRadioButton();
-        jRadioButton4 = new javax.swing.JRadioButton();
-        jButton1 = new javax.swing.JButton();
         btnLimpar = new javax.swing.JButton();
+        jScrollPane5 = new javax.swing.JScrollPane();
+        listOnlines1 = new javax.swing.JList();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         listOnlines = new javax.swing.JList();
@@ -202,13 +187,13 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         txtAreaReceive = new javax.swing.JTextArea();
         jPanelLocatario = new javax.swing.JPanel();
         jLabelNomeLocatario = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jRadioButton5 = new javax.swing.JRadioButton();
+        txtLocal = new javax.swing.JTextField();
+        bt1 = new javax.swing.JRadioButton();
         jLabel4 = new javax.swing.JLabel();
-        jRadioButton6 = new javax.swing.JRadioButton();
-        jRadioButton7 = new javax.swing.JRadioButton();
-        jRadioButton8 = new javax.swing.JRadioButton();
-        jButton2 = new javax.swing.JButton();
+        bt2 = new javax.swing.JRadioButton();
+        bt3 = new javax.swing.JRadioButton();
+        bt4 = new javax.swing.JRadioButton();
+        btnCadastrarEspaco = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -217,39 +202,12 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
 
         jLabelNomeProfissional.setText("Sua Profissão");
 
-        jListLocais.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane3.setViewportView(jListLocais);
-
-        jLabel3.setText("Horários");
-
-        jRadioButton9.setText("08-10");
-
-        jRadioButton10.setText("10-12");
-
-        jRadioButton11.setText("14-16");
-
-        jRadioButton12.setText("16-18");
-
-        jLabel5.setText("Valor por tempo");
-
-        jLabelValorUnico.setText("R$");
-
-        jLabel7.setText("TOTAL:");
-
-        jLabelValorTotal.setText("R$");
-
         jButtonAluAndChat.setText("Alugar e falar com clientes");
         jButtonAluAndChat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButtonAluAndChatActionPerformed(evt);
             }
         });
-
-        jLabel6.setText("↓ Locais disponíveis ↓");
 
         javax.swing.GroupLayout jPanelAlugarLocalLayout = new javax.swing.GroupLayout(jPanelAlugarLocal);
         jPanelAlugarLocal.setLayout(jPanelAlugarLocalLayout);
@@ -258,36 +216,10 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
                 .addGap(49, 49, 49)
                 .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabelNomeProfissional)
-                    .addComponent(jTextSuaPro, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
-                        .addGap(224, 224, 224)
-                        .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabel7))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabelValorTotal)
-                            .addComponent(jLabelValorUnico)))
-                    .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
-                        .addGap(246, 246, 246)
-                        .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jLabel3)
-                            .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jRadioButton10)
-                                .addComponent(jRadioButton9)
-                                .addComponent(jRadioButton11)
-                                .addComponent(jRadioButton12)))))
-                .addContainerGap(31, Short.MAX_VALUE))
-            .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButtonAluAndChat, javax.swing.GroupLayout.PREFERRED_SIZE, 301, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
-                        .addGap(9, 9, 9)
-                        .addComponent(jLabel6)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabelNomeProfissional)
+                    .addComponent(jTextSuaPro, javax.swing.GroupLayout.PREFERRED_SIZE, 321, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         jPanelAlugarLocalLayout.setVerticalGroup(
             jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -296,34 +228,9 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                 .addComponent(jLabelNomeProfissional)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextSuaPro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel6)
-                        .addGap(2, 2, 2)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanelAlugarLocalLayout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jRadioButton9)
-                        .addGap(18, 18, 18)
-                        .addComponent(jRadioButton10)
-                        .addGap(35, 35, 35)
-                        .addComponent(jRadioButton11)
-                        .addGap(27, 27, 27)
-                        .addComponent(jRadioButton12)
-                        .addGap(28, 28, 28)
-                        .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(jLabelValorUnico))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanelAlugarLocalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
-                            .addComponent(jLabelValorTotal))))
-                .addGap(18, 18, 18)
+                .addGap(139, 139, 139)
                 .addComponent(jButtonAluAndChat, javax.swing.GroupLayout.DEFAULT_SIZE, 53, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(185, 185, 185))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Digite seu nome"));
@@ -421,76 +328,6 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("Nome:");
-
-        txtNomeProf.setText("NOME");
-
-        jLabel2.setText("Profissão:");
-
-        txtProfProf.setText("PROFISSÂO");
-
-        jRadioButton1.setText("8-10");
-
-        jRadioButton3.setText("14-16");
-
-        jRadioButton2.setText("10-12");
-
-        jRadioButton4.setText("16-18");
-
-        jButton1.setText("Contratar");
-
-        javax.swing.GroupLayout jPanelTelaContratarLayout = new javax.swing.GroupLayout(jPanelTelaContratar);
-        jPanelTelaContratar.setLayout(jPanelTelaContratarLayout);
-        jPanelTelaContratarLayout.setHorizontalGroup(
-            jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jRadioButton1)
-                .addGap(18, 18, 18)
-                .addComponent(jRadioButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton4)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
-                .addGap(16, 16, 16)
-                .addGroup(jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtProfProf)
-                    .addComponent(jLabel2)
-                    .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(26, 26, 26)
-                        .addComponent(txtNomeProf)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(27, 27, 27))
-        );
-        jPanelTelaContratarLayout.setVerticalGroup(
-            jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
-                .addGroup(jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
-                            .addComponent(txtNomeProf))
-                        .addGap(18, 18, 18)
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtProfProf))
-                    .addGroup(jPanelTelaContratarLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(18, 18, 18)
-                .addGroup(jPanelTelaContratarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton3)
-                    .addComponent(jRadioButton2)
-                    .addComponent(jRadioButton4))
-                .addGap(24, 24, 24))
-        );
-
         btnLimpar.setText("Limpar");
         btnLimpar.setEnabled(false);
         btnLimpar.addActionListener(new java.awt.event.ActionListener() {
@@ -499,6 +336,10 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             }
         });
 
+        listOnlines1.setBackground(new java.awt.Color(204, 255, 204));
+        listOnlines1.setFont(new java.awt.Font("Arial Black", 0, 12)); // NOI18N
+        jScrollPane5.setViewportView(listOnlines1);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -506,6 +347,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane5)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 252, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -517,8 +359,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                                 .addGap(0, 1, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jPanelTelaContratar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(btnSair, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -531,9 +372,9 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSair))
                     .addComponent(btnEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addComponent(jPanelTelaContratar, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(10, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Onlines"));
@@ -601,19 +442,24 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
 
         jLabelNomeLocatario.setText("NOME");
 
-        jTextField1.setText("Localização");
+        txtLocal.setText("Localização");
 
-        jRadioButton5.setText("08-10");
+        bt1.setText("08-10");
 
         jLabel4.setText("Horários Disponíveis");
 
-        jRadioButton6.setText("10-12");
+        bt2.setText("10-12");
 
-        jRadioButton7.setText("14-16");
+        bt3.setText("14-16");
 
-        jRadioButton8.setText("16-18");
+        bt4.setText("16-18");
 
-        jButton2.setText("Cadastrar");
+        btnCadastrarEspaco.setText("Cadastrar");
+        btnCadastrarEspaco.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCadastrarEspacoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanelLocatarioLayout = new javax.swing.GroupLayout(jPanelLocatario);
         jPanelLocatario.setLayout(jPanelLocatarioLayout);
@@ -625,22 +471,22 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                         .addGap(24, 24, 24)
                         .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabelNomeLocatario)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(txtLocal, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanelLocatarioLayout.createSequentialGroup()
                         .addGap(33, 33, 33)
                         .addComponent(jLabel4))
                     .addGroup(jPanelLocatarioLayout.createSequentialGroup()
                         .addGap(66, 66, 66)
                         .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jRadioButton6)
-                            .addComponent(jRadioButton5))
+                            .addComponent(bt2)
+                            .addComponent(bt1))
                         .addGap(62, 62, 62)
                         .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jRadioButton7)
-                            .addComponent(jRadioButton8)))
+                            .addComponent(bt3)
+                            .addComponent(bt4)))
                     .addGroup(jPanelLocatarioLayout.createSequentialGroup()
                         .addGap(66, 66, 66)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnCadastrarEspaco, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(64, Short.MAX_VALUE))
         );
         jPanelLocatarioLayout.setVerticalGroup(
@@ -649,19 +495,19 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
                 .addGap(43, 43, 43)
                 .addComponent(jLabelNomeLocatario)
                 .addGap(64, 64, 64)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtLocal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33)
                 .addComponent(jLabel4)
                 .addGap(31, 31, 31)
                 .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton5)
-                    .addComponent(jRadioButton7))
+                    .addComponent(bt1)
+                    .addComponent(bt3))
                 .addGap(36, 36, 36)
                 .addGroup(jPanelLocatarioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jRadioButton6)
-                    .addComponent(jRadioButton8))
+                    .addComponent(bt2)
+                    .addComponent(bt4))
                 .addGap(67, 67, 67)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnCadastrarEspaco, javax.swing.GroupLayout.PREFERRED_SIZE, 64, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(58, Short.MAX_VALUE))
         );
 
@@ -770,7 +616,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             //JOptionPane.showMessageDialog(this, "SELECIONE UM PROFISSIONAL!"); //Isso não irá acontecer, pois o campo de escrever so fica ativo quando seleciona um profissional
         }
 
-        if (!text.isEmpty()) {//assim, quando algo na String
+        if (!text.isEmpty()) {//assim, quando há algo na String
             this.protocol.setNome(name); //seta o nome no protocol
             this.protocol.setTexto(text); //e seta o texto figitado na string
 
@@ -788,15 +634,12 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
 
     private void btnConnectarProfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectarProfActionPerformed
         // TODO add your handling code here:
-            this.jPanelInicial.setVisible(false);
-            this.jPanelAlugarLocal.setVisible(true);
-        
+        this.jPanelInicial.setVisible(false);
+        this.jPanelAlugarLocal.setVisible(true);
+
     }//GEN-LAST:event_btnConnectarProfActionPerformed
 
     private void btnConnectarLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConnectarLocActionPerformed
-        // TODO add your handling code here:
-        //String name = this.txtName.getText(); //captura o nome
-        //this.jLabelNomeLocatario.setText(name); //coloca na Label
         this.jPanelInicial.setVisible(false);
         this.jPanelLocatario.setVisible(true);
     }//GEN-LAST:event_btnConnectarLocActionPerformed
@@ -805,12 +648,11 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         Color cor = Color.RED;
         String name = this.txtName.getText(); //pega o nome que esta na caixa de diálogo
         String profi = this.jTextSuaPro.getText();
-        
 
-        if (!name.isEmpty() && !profi.isEmpty()){ //Teste para não conectar sem nome, se tem nome digitado...
+        if (!name.isEmpty() && !profi.isEmpty()) { //Teste para não conectar sem nome, se tem nome digitado...
             this.protocol = new Protocol(); //INICIA(instancia) o objeto
             this.protocol.setStatus(Status.CONECTADO); //Seta o Status DO CLIENTE em Protocol
-            this.protocol.setNome("["+profi+"] "+ name);// seta o nome do cliente
+            this.protocol.setNome("[" + profi + "] " + name);// seta o nome do cliente
 
             this.conectaCliente = new ConectaCliente(); //inicia uma nova Thread socket que está enste objeto
             this.s = this.conectaCliente.connect(); //inicia o método conecta que retorna o socket
@@ -820,58 +662,72 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
             this.conectaCliente.enviar(protocol); //chama o método enviar no conecta Cliente
             //this.jPanelInicial.setVisible(false);
             this.jPanelAlugarLocal.setVisible(false);
-            this.jPanelChat.setVisible(true);
-            this.jPanelTelaContratar.setVisible(false);
-            this.jLabelSeuNome.setText(profi+": "+name);
+            this.jPanelChat.setVisible(true);            
+            this.jLabelSeuNome.setText(profi + ": " + name);
         }
-// TODO add your handling code here:
-        /*
-        String name = this.txtName.getText(); //pega o nome que esta na caixa de diálogo
-        String profi = this.txtNomeProf.getText();        
-
-        if (!name.isEmpty()) { 
-        this.protocol = new Protocol();
-        //INICIA(instancia) o objeto
-        this.protocol.setStatus(Status.CONECTADO); //Seta o Status DO CLIENTE em Protocol
-        this.protocol.setNome(profi + " " + name);// seta o nome do cliente
-
-        this.conectaCliente = new ConectaCliente(); //inicia uma nova Thread socket que está enste objeto
-        this.s = this.conectaCliente.connect(); //inicia o método conecta que retorna o socket
-
-        new Thread(new ListenerSocket(this.s)).start(); //com os dados preenchidos, inicia a Thread
-
-        this.conectaCliente.enviar(protocol);
-       
-        this.jPanelAlugarLocal.setVisible(false);
-        this.jPanelChat.setVisible(true);
-        this.jPanelTelaContratar.setEnabled(false);
-        }
- */       
     }//GEN-LAST:event_jButtonAluAndChatActionPerformed
 
+    private void btnCadastrarEspacoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarEspacoActionPerformed
+        String name = this.txtName.getText(); //pega o nome que esta na caixa de diálogo
+        String local = this.txtLocal.getText();
+        String h1, h2, h3, h4;
+        if(bt1.isSelected()){
+            h1 = "08 - 10, ";
+            
+        }else{
+            h1 = "";
+        }
+         if(bt2.isSelected()){
+            h2 = "10 - 12, ";
+        }else{
+            h2 = "";
+        } if(bt3.isSelected()){
+            h3 = "14 - 16, ";
+        }else{
+            h3 = "";
+        } if(bt4.isSelected()){
+            h4 = "16 - 18.";
+        }else{
+            h4 = "";
+        }
+        
+
+        if (!name.isEmpty() && !local.isEmpty()) { //Teste para não conectar sem nome, se tem nome digitado...
+            this.protocol = new Protocol(); //INICIA(instancia) o objeto
+            this.protocol.setStatus(Status.CONECTADO); //Seta o Status DO CLIENTE em Protocol
+            this.protocol.setNome("[" + name + "] " + local + h1+h2+h3+h4);// seta o nome do cliente
+
+            this.conectaCliente = new ConectaCliente(); //inicia uma nova Thread socket que está enste objeto
+            this.s = this.conectaCliente.connect(); //inicia o método conecta que retorna o socket
+
+            new Thread(new ListenerSocket(this.s)).start(); //com os dados preenchidos, inicia a Thread
+
+            this.conectaCliente.enviar(protocol); //chama o método enviar no conecta Cliente
+            //this.jPanelInicial.setVisible(false);
+            this.jPanelAlugarLocal.setVisible(false);
+            this.jPanelChat.setVisible(true);            
+            this.jLabelSeuNome.setText(local + ": " + name);
+        }
+
+    }//GEN-LAST:event_btnCadastrarEspacoActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JRadioButton bt1;
+    private javax.swing.JRadioButton bt2;
+    private javax.swing.JRadioButton bt3;
+    private javax.swing.JRadioButton bt4;
+    private javax.swing.JButton btnCadastrarEspaco;
     private javax.swing.JButton btnConnectarCliente;
     private javax.swing.JButton btnConnectarLoc;
     private javax.swing.JButton btnConnectarProf;
     private javax.swing.JButton btnEnviar;
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnSair;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButtonAluAndChat;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabelNomeLocatario;
     private javax.swing.JLabel jLabelNomeProfissional;
     private javax.swing.JLabel jLabelSeuNome;
-    private javax.swing.JLabel jLabelValorTotal;
-    private javax.swing.JLabel jLabelValorUnico;
-    private javax.swing.JList<String> jListLocais;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -879,30 +735,16 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
     private javax.swing.JPanel jPanelChat;
     private javax.swing.JPanel jPanelInicial;
     private javax.swing.JPanel jPanelLocatario;
-    private javax.swing.JPanel jPanelTelaContratar;
-    private javax.swing.JRadioButton jRadioButton1;
-    private javax.swing.JRadioButton jRadioButton10;
-    private javax.swing.JRadioButton jRadioButton11;
-    private javax.swing.JRadioButton jRadioButton12;
-    private javax.swing.JRadioButton jRadioButton2;
-    private javax.swing.JRadioButton jRadioButton3;
-    private javax.swing.JRadioButton jRadioButton4;
-    private javax.swing.JRadioButton jRadioButton5;
-    private javax.swing.JRadioButton jRadioButton6;
-    private javax.swing.JRadioButton jRadioButton7;
-    private javax.swing.JRadioButton jRadioButton8;
-    private javax.swing.JRadioButton jRadioButton9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTextField jTextSuaPro;
     private javax.swing.JList listOnlines;
+    private javax.swing.JList listOnlines1;
     private javax.swing.JTextArea txtAreaReceive;
     private javax.swing.JTextArea txtAreaSend;
+    private javax.swing.JTextField txtLocal;
     private javax.swing.JTextField txtName;
-    private javax.swing.JLabel txtNomeProf;
-    private javax.swing.JLabel txtProfProf;
     // End of variables declaration//GEN-END:variables
 }
