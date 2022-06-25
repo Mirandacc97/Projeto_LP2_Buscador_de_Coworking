@@ -10,7 +10,9 @@ import projetoLP2.AppChatProtocol.Protocol;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Set;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JList;
@@ -139,14 +141,36 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         Set<String> NamesC = protocol.getSetOn(); //uma set de string para recuperar quem ta on
 
         // proNames.remove(protocol.getNome()); //serve para remover o proprio nome da lista. como o cluente n ve outro cliente, então tando faz
-        String[] array = (String[]) NamesC.toArray(new String[NamesC.size()]);//o jlist so aceita um array
+        //String[] array = (String[]) NamesC.toArray(new String[NamesC.size()]);//o jlist so aceita um array
         //faz o array ter exatamente o mesmo tamanho do das strings
+        //String[] clientes = new String[1];
+        Vector<String> clientesDin = new Vector<>();
+        int i = 0;
+        for (String filtrado : NamesC){
+            if (!filtrado.contains("***")){
+                clientesDin.add(filtrado);
+                i++;
+            }
+        }
+        
+        String[] locais = new String[1];
+        i = 0;
+        for (String filtrado : NamesC){
+            if (filtrado.contains("***")){
+                locais[i] = filtrado;
+                i++;
+            }
+        }
+        
+        //clientes = (String[]) clientesDin.toArray();
+        
+        this.listOnlines.setListData(clientesDin);
 
         //↓ propriedades usadas no jList para seu funcionamento
-        this.listOnlines.setListData(array); //passar o array para o jList
+        //this.listOnlines.setListData(clientes); //passar o array para o jList
         this.listOnlines.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //serve para aceitar ser um nome selecionado, sem isso era possivel selecionar vários
         this.listOnlines.setLayoutOrientation(JList.VERTICAL); //organiza os nomes verticalmente
-        this.listOnlines1.setListData(array); //passar o array para o jList
+        this.listOnlines1.setListData(locais); //passar o array para o jList
         //this.listOnlines1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); //serve para aceitar ser um nome selecionado, sem isso era possivel selecionar vários
         this.listOnlines1.setLayoutOrientation(JList.VERTICAL);
     }   
@@ -580,6 +604,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
 
             this.conectaCliente.enviar(protocol); //chama o método enviar no conecta Cliente
             this.jPanelInicial.setVisible(false);
+            this.listOnlines1.setVisible(false);
             this.jPanelChat.setVisible(true);
             this.jLabelSeuNome.setText(name);
         }
@@ -668,6 +693,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
     }//GEN-LAST:event_jButtonAluAndChatActionPerformed
 
     private void btnCadastrarEspacoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarEspacoActionPerformed
+        String tag = "***";
         String name = this.txtName.getText(); //pega o nome que esta na caixa de diálogo
         String local = this.txtLocal.getText();
         String h1, h2, h3, h4;
@@ -695,7 +721,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
         if (!name.isEmpty() && !local.isEmpty()) { //Teste para não conectar sem nome, se tem nome digitado...
             this.protocol = new Protocol(); //INICIA(instancia) o objeto
             this.protocol.setStatus(Status.CONECTADO); //Seta o Status DO CLIENTE em Protocol
-            this.protocol.setNome("[" + name + "] " + local + h1+h2+h3+h4);// seta o nome do cliente
+            this.protocol.setNome("[" + name + "] " + local + h1+h2+h3+h4+"***");// seta o nome do cliente
 
             this.conectaCliente = new ConectaCliente(); //inicia uma nova Thread socket que está enste objeto
             this.s = this.conectaCliente.connect(); //inicia o método conecta que retorna o socket
@@ -704,6 +730,7 @@ public class ProtocolClientFrame extends javax.swing.JFrame {
 
             this.conectaCliente.enviar(protocol); //chama o método enviar no conecta Cliente
             //this.jPanelInicial.setVisible(false);
+            this.jPanelLocatario.setVisible(false);
             this.jPanelAlugarLocal.setVisible(false);
             this.jPanelChat.setVisible(true);            
             this.jLabelSeuNome.setText(local + ": " + name);
